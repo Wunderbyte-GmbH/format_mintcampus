@@ -1,0 +1,1116 @@
+/* This file is part of Moodle - http://moodle.org/
+
+   Moodle is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Moodle is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Moodle.  If not, see <http://www.gnu.org/licenses/>. */
+
+/**
+ * mintcampus Format.
+ *
+ * @package    course/format
+ * @subpackage mintcampus
+ * @version    See the value of '$plugin->version' in version.php.
+ * @author     Based on code originally written by Paul Krix and Julian Ridden.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+.course-content ul.mintcampus {
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+@media (min-width: 768px) {
+    .pagelayout-standard.format-mintcampus #page.drawers .main-inner,
+    body.limitedwidth.format-mintcampus #page.drawers .main-inner {
+        max-width: 960px;
+    }
+}
+
+.format-mintcampus .course-content .sectionsummary ul {
+    padding-left: 1rem;
+}
+
+.format-mintcampus .themintcampus {
+    gap: 0.75rem;
+}
+
+.format-mintcampus .themintcampus .mintcampus-section {
+    width: 210px;
+}
+
+.format-mintcampus .themintcampus .mintcampus-section.currentmintcampussection {
+    border: 2px solid var(--primary);
+}
+
+.format-mintcampus .course-content ul.flexaccordicons .mintcampus-image {
+    height: 140px;
+    position: relative;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons .mintcampus-generatedimage {
+    background-size: contain;
+    height: 140px;
+}
+
+/*rtl:begin:ignore*/
+.format-mintcampus .themintcampus .mintcampus-image img {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+/*rtl:end:ignore*/
+
+.format-mintcampus #mintcampusPopup .modal-dialog {
+    max-width: 100%;
+}
+
+@media (min-width: 576px) {
+    .format-mintcampus #mintcampusPopup .modal-dialog {
+        margin-left: 1.25rem;
+        margin-right: 1.25rem;
+    }
+}
+
+.format-mintcampus #mintcampusPopup .modal-dialog .modal-body {
+    min-height: 200px;
+}
+
+.format-mintcampus .mintcampus-completion {
+    border-color: black;
+    border-radius: 45px;
+    border-style: solid;
+    border-width: 3px;
+    bottom: 8%;
+    display: flex;
+    flex-direction: column;
+    height: 42px;
+    justify-content: center;
+    padding: 4px;
+    position: absolute;
+    right: 8%;
+    width: 42px;
+}
+
+.format-mintcampus .mintcampus-completion.mintcampus-completion-colour-low {
+    background-color: magenta;
+    color: white;
+}
+
+.format-mintcampus .mintcampus-completion.mintcampus-completion-colour-middle {
+    background-color: yellow;
+    color: black;
+}
+
+.format-mintcampus .mintcampus-completion.mintcampus-completion-colour-high {
+    background-color: green;
+    color: white;
+}
+
+.format-mintcampus .mintcampus-completion.mintcampus-completion-percentagequarter-1 {
+    border-right-color: lightgreen;
+}
+
+.format-mintcampus .mintcampus-completion.mintcampus-completion-percentagequarter-2 {
+    border-bottom-color: lightgreen;
+    border-right-color: lightgreen;
+}
+
+.format-mintcampus .mintcampus-completion.mintcampus-completion-percentagequarter-3 {
+    border-bottom-color: lightgreen;
+    border-left-color: lightgreen;
+    border-right-color: lightgreen;
+}
+
+.format-mintcampus .mintcampus-completion.mintcampus-completion-percentagequarter-4 {
+    border-color: lightgreen;
+}
+
+.format-mintcampus .mintcampus-completion .mintcampus-percentage {
+    font-size: 0.75em;
+}
+
+.format-mintcampus .mintcampus-image-preview {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.format-mintcampus .mintcampus-image-name {
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.format-mintcampus .course-content ul.ftopics h3.sectionname {
+    background: transparent;
+    border: 0 none;
+    border-bottom: dashed 1px #000;
+    font-weight: normal;
+    padding: 0;
+    padding-bottom: 5px;
+}
+.format-mintcampus .course-content ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.format-mintcampus .course-content .summary {
+    line-height: 1.5;
+    overflow: auto;
+}
+
+.format-mintcampus .course-content ul.ftopics-0 #section-0 {
+    background: transparent;
+    border: 0 none;
+}
+
+.format-mintcampus .course-content ul.ftopics-0 #section-0 .side {
+    width: 28px;
+}
+
+.format-mintcampus div.flexaccordmiddle-column > ul {
+    list-style-type: none;
+    overflow: visible;
+}
+
+.format-mintcampus .course-content ul.ftopics {
+    margin: 0;
+}
+
+.format-mintcampus .course-content ul.ftopics li.section {
+    list-style: none;
+    margin: 5px 0 0 0;
+    padding: 0;
+}
+
+.format-mintcampus .course-content ul.ftopics li.section .side {
+    text-align: center;
+    width: 40px;
+}
+
+.format-mintcampus .course-content ul.ftopics li.section .left {
+    float: left;
+    padding: 0;
+}
+
+.format-mintcampus .course-content ul.ftopics li.section .right {
+    float: right;
+}
+
+/* @group Icons */
+.format-mintcampus #flexaccordiconcontainer {
+    height: auto;
+    padding: 0;
+    width: 100%;
+    margin: 0 auto 0 0.1rem;
+}
+.format-mintcampus #flexaccordiconcontainer ul.flexaccordicons {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+}
+.format-mintcampus #flexaccordiconcontainer ul.flexaccordicons > li {
+    display: flex;
+    height: auto;
+    padding: 10px;
+    text-align: left;
+}
+.format-mintcampus #flexaccordiconcontainer ul.flexaccordicons .flexaccordsectionwrapper {
+    border-radius: 7px;
+    box-shadow: 0 0 7px 1px #dbdbdb;
+    transition: box-shadow 0.2s ease;
+    padding: 30px 30px 30px;
+}
+.format-mintcampus #flexaccordiconcontainer ul.flexaccordicons .flexaccordsectionwrapper:hover {
+    box-shadow: 0 0 7px 1px #c1c1c1;
+    text-decoration: none;
+    background-color: #f5f5f5;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.format-mintcampus .dir-rtl #flexaccordiconcontainer ul.flexaccordicons > li {
+    text-align: right;
+}
+.format-mintcampus #flexaccordiconcontainer ul.flexaccordicons.content_inside > li {
+    position: relative;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons img.new_activity {
+    position: absolute;
+    z-index: 1;
+}
+
+.format-mintcampus .course-content .flexaccordicon_link .sectionsummaryiconcontainer {
+    float: right;
+    padding-left: 4px;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons:hover {
+    color: black;
+    text-decoration: none;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .icon_content {
+    font-weight: bold;
+    height: auto;
+    margin: 0;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.8rem 0.5rem 0.1rem 0.5rem;
+    color: black;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .icon_content.content_inside {
+    background-color: white;
+    box-sizing: content-box;
+    color: black;
+    height: auto;
+    margin: auto;
+    opacity: 0.8;
+    overflow-wrap: break-word;
+    padding: 10px;
+    position: absolute;
+    text-overflow: inherit;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+.format-mintcampus .course-content ul.flexaccordicons > li .icon_content.content_inside.top {
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .icon_content.content_inside.middle {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .icon_content.content_inside.bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .render_as {
+    background-color: white;
+    color: black;
+    opacity: 0.8;
+    padding: 4px 8px;
+    position: absolute;
+    right: 0;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .render_as.top {
+    top: 0;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .render_as.bottom {
+    bottom: 0;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li div.sctilegraphic,
+.format-mintcampus .course-content ul.flexaccordicons > li div.scexpandablegraphic {
+    padding: 5px 5px 5px;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li div.sectionsummary {
+    padding: 0.5em 1em;
+    flex: 1 0 auto;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .flexaccordsectionwrapper {
+    border: 1px solid #d0cdcd;
+    border-radius: 5px;
+    box-shadow: 2px 2px 6px #c4c0c0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li .image_holder {
+    /* Override Bootstrap V3 box sizing of .box-sizing(border-box); in scaffolding.less. */
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    overflow: visible;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li img {
+    margin-top: 0;
+    max-width: 100%;
+}
+
+.format-mintcampus .activityiconcontainer > img {
+    margin-top: 0;
+    max-width: 100%;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li div.info {
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+}
+
+.format-mintcampus .course-content ul.flexaccordicons > li div.infosection {
+    width: 100%;
+    border-radius: 0.5rem;
+}
+
+.format-mintcampus .course-content li.flexaccord_section {
+    clear: both;
+}
+/* @end */
+
+/* Added by Justin 20160514 */
+.format-mintcampus .course-content ul.flexaccordicons > li .flexaccordsectionwrapper.inaccessible {
+    background-color: #999;
+    border-color: #aaa;
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+    filter: gray; /* IE 6-9 */
+    filter: alpha(opacity=70);
+    opacity: 0.7;
+}
+/* @end */
+
+.format-mintcampus .flexaccordexpanded,
+.flexaccordexpandabletoggle {
+    text-align: center;
+}
+
+.format-mintcampus .course-content .flexaccordexpandablecollapsecontainer {
+    height: 0;
+    margin-top: 4px;
+    transition: height .5s ease-in-out;
+}
+
+.format-mintcampus .course-content .flexaccordexpandablecollapsecontainer.collapse.show {
+    height: auto;
+}
+
+.format-mintcampus .course-content .flexaccordexpandablesection {
+    line-height: inherit;
+}
+
+.format-mintcampus .course-content .flexaccordexpandablesection ul.section {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.format-mintcampus .course-content .flexaccordexpandablesection ul.section,
+.format-mintcampus .course-content .flexaccordexpandablesection ul.ftopics,
+.format-mintcampus .course-content .flexaccordexpandablesection ul.section .activity .activityinstance > a {
+    padding-left: 0;
+}
+
+.format-mintcampus .course-content .flexaccordexpandablesection ul.ftopics li.section .content {
+    margin: 0;
+}
+
+.format-mintcampus .course-content .flexaccordexpandablesection ul.section .activity .activityinstance > a {
+    text-indent: 0;
+}
+
+.format-mintcampus .course-content button.backbutton {
+    background: #8139a3;
+    color: white;
+    border-radius: 4px;
+    border: 1px solid;
+}
+
+.format-mintcampus .activities-section-0 .activity-item,
+.activities-section-0 .activity-item:hover {
+    background-color: rgb(241 242 252);
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    margin: auto;
+    border-color: #f7f7f9 !important;
+}
+
+.format-mintcampus .activities-section .activity-item,
+.activities-section .activity-item:hover {
+    background-color: rgb(241 242 252);
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.format-mintcampus .activity-item .activity-info,
+.activity-item .activity-actions {
+    align-self: auto !important;
+}
+
+.format-mintcampus .activity-duration {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    margin: auto;
+    font-size: small;
+}
+
+.format-mintcampus .progress-bar-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    height: 2rem;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+}
+
+.format-mintcampus .progress-bar-line-container {
+    flex: 0 1 auto;
+}
+
+.format-mintcampus .progress-bar-line,
+.progress-bar-line:hover {
+    width: 100%;
+    height: 0.2rem;
+    margin-left: 0.6rem;
+    margin-right: 0.6rem;
+}
+
+.format-mintcampus .progress-bar-line-top,
+.progress-bar-line-top:hover {
+    position: relative;
+    height: 0.2rem;
+}
+
+.format-mintcampus .progress-bar-line-activities {
+    flex: 1;
+    border-radius: .5rem;
+    margin-left: 0.5rem;
+    margin-bottom: 0.3rem;
+    border-radius: .5rem;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.format-mintcampus .progress-bar-line-percentage {
+    position: absolute;
+    right: -1rem;
+    height: 1rem;
+    top: -0.5rem;
+}
+.format-mintcampus .course-content div.accordion-container {
+    overflow-anchor: none;
+    padding: 0.3rem 0 0.3rem 0;
+}
+
+.format-mintcampus .course-content div.accordion-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff !important;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 0.3rem;
+    box-shadow: 0 3px 5px 1px #dfdfdf;
+}
+
+.format-mintcampus .course-content div.accordion-card div.collapse-container {
+    padding-bottom: 0.5rem;
+}
+
+.format-mintcampus .course-content div.accordion-card div.collapse-container div.collapse-activity {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+}
+
+
+.format-mintcampus .course-content div.accordion-card div.accordion-header {
+    padding: 0.5rem 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.format-mintcampus .course-content div.accordion-card div.accordion-header button:after {
+    color: #000;
+    font-style: normal;
+    font-variant: all-petite-caps;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: "FontAwesome";
+    font-weight: 900;
+    content: "\f077";
+    float: right;
+    font-size: 1.2em;
+    margin: -1px 5px 0 -8px;
+    text-align: right;
+    width: 33px;
+}
+
+.format-mintcampus .course-content div.accordion-card div.accordion-header button.collapsed:after {
+    content: "\f078";
+}
+
+.format-mintcampus .course-content div.accordion-card div.accordion-header button.btn-header {
+    color: black;
+    font-weight: 600;
+    font-size: 18px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: .9375rem;
+    line-height: 1.5;
+    border-radius: 0.5rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.format-mintcampus .activity-item .inplaceeditable .quickeditlink,
+.activity-item .afterlink {
+    margin: 0 !important;
+    align-self: center;
+}
+
+.format-mintcampus .activityiconcontainer.courseicon {
+    background-color: #fff !important;
+    border-radius: 50% !important;
+}
+.format-mintcampus .activityiconcontainer.courseicon:hover {
+    background-color: #fff !important;
+    border-radius: 50% !important;
+}
+
+.format-mintcampus .content .row.section-description {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+    flex-direction: column;
+}
+
+.format-mintcampus img.activityicon {
+    filter: none !important;
+}
+
+.format-mintcampus .modtype_label > .activity-item {
+    background: none !important;
+    border: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.format-mintcampus .activity-item .inplaceeditable .quickeditlink,
+.activity-item .afterlink {
+    margin: 0 !important;
+    align-self: center;
+}
+
+.format-mintcampus .activityiconcontainer.courseicon {
+    background-color: #fff !important;
+    border-radius: 50% !important;
+}
+
+.format-mintcampus .content .row.section-description {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.format-mintcampus .description-inner {
+    line-height: 1.5;
+    color: #000 !important;
+}
+
+.format-mintcampus .description .activity-altcontent {
+    padding: 0 !important;
+}
+
+.format-mintcampus .description-inner > .no-overflow {
+    overflow: hidden !important;
+}
+
+.format-mintcampus .description-inner-activity {
+    padding: 0.4rem 0.7rem !important;
+}
+
+/*
+Course rating
+ */
+.format-mintcampus .modal-header {
+    display: none;
+}
+.format-mintcampus .modal-body {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+.path-format-mintcampus {
+    margin: 0;
+}
+.format-mintcampus .modal-footer {
+    border: none;
+    padding: 8px 2rem 80px;
+    justify-content: flex-end;
+}
+
+
+.path-format-mintcampus .ui.raised.raised.segment,
+.path-format-mintcampus .ui.raised.raised.segments {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.path-format-mintcampus .ui.segment:last-child {
+    margin-bottom: 0;
+}
+
+.path-format-mintcampus .ui.segment,
+.path-format-mintcampus .ui.segments .segment {
+    font-size: 1rem;
+}
+.path-format-mintcampus .ui.segment {
+    position: relative;
+    background: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+}
+
+.path-format-mintcampus #mintcampus_comment {
+    border: 1px solid #333;
+    padding: 1rem;
+    margin-top: 8px;
+    border-radius: 10px;
+}
+
+.path-format-mintcampus .ui.ui.ui.blue.ribbon.label {
+    border-color: #1a69a4;
+}
+.path-format-mintcampus .ui.blue.labels .label,
+.path-format-mintcampus .ui.ui.ui.blue.label {
+    background-color: #2185d0;
+    border-color: #2185d0;
+    color: #fff;
+}
+.path-format-mintcampus .ui.ribbon.label {
+    left: calc(-1rem - 1.2em);
+    margin-right: -1.2em;
+    padding-left: calc(1rem + 1.2em);
+    padding-right: 1.2em;
+}
+.path-format-mintcampus .ui.ribbon.label {
+    position: relative;
+    margin: 0;
+    margin-right: 0;
+    min-width: -webkit-max-content;
+    min-width: -moz-max-content;
+    min-width: max-content;
+    border-radius: 0 .28571429rem .28571429rem 0;
+    border-color: rgba(0, 0, 0, .15);
+}
+.path-format-mintcampus .ui.label:first-child {
+    margin-left: 0;
+}
+.path-format-mintcampus a.ui.label {
+    cursor: pointer;
+}
+.path-format-mintcampus .ui.label,
+.ui.labels .label {
+    font-size: .85714286rem;
+}
+.path-format-mintcampus .ui.label {
+    display: inline-block;
+    line-height: 1;
+    vertical-align: baseline;
+    margin: 0 .14285714em;
+    background-color: #e8e8e8;
+    background-image: none;
+    padding: .5833em .833em;
+    padding-right: 0.833em;
+    padding-left: 0.833em;
+    color: rgba(0, 0, 0, .6);
+    text-transform: none;
+    font-weight: 700;
+    border: 0 solid transparent;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-radius: .28571429rem;
+    -webkit-transition: background .1s ease;
+    transition: background .1s ease;
+}
+.path-format-mintcampus .ui > a {
+    color: #4183c4;
+    text-decoration: none;
+}
+
+.path-format-mintcampus .ui.form,
+.path-format-mintcampus .ui.form .field .dropdown,
+.path-format-mintcampus .ui.form .field .dropdown .menu > .item {
+    font-size: 1rem;
+}
+.path-format-mintcampus .ui.form {
+    position: relative;
+    width: 100%;
+    display: inline-flex;
+}
+
+
+.path-format-mintcampus .ui.form .field:last-child,
+.path-format-mintcampus .ui.form .fields .fields,
+.path-format-mintcampus .ui.form .fields:last-child .field {
+
+    margin-bottom: 0;
+
+}
+.path-format-mintcampus .ui.form .field {
+    clear: both;
+    margin: 0 0 1em;
+    width: 100%;
+}
+
+.path-format-mintcampus .ui.form .field > label {
+    display: block;
+    margin: 0 0 .28571429rem 0;
+    color: rgba(0, 0, 0, .87);
+    font-size: .92857143em;
+    font-weight: 700;
+    text-transform: none;
+}
+
+.path-format-mintcampus .ui.rating {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+
+.path-format-mintcampus .ui.rating .icon {
+    background: 0 0;
+    color: rgba(0, 0, 0, .15);
+}
+.path-format-mintcampus .ui.rating .icon {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-weight: 400;
+    font-style: normal;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    cursor: pointer;
+    width: 1.25em;
+    height: auto;
+    -webkit-transition: opacity .1s ease, background .1s ease, text-shadow .1s ease, color .1s ease;
+    transition: opacity .1s ease, background .1s ease, text-shadow .1s ease, color .1s ease;
+    line-height: 1;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.path-format-mintcampus .ui i.icon,
+.path-format-mintcampus i.icons {
+    font-size: 1em;
+}
+.path-format-mintcampus .ui i.icon {
+    display: inline-block;
+    opacity: 1;
+    margin: 0 .25rem 0 0;
+    width: 1.18em;
+    height: 1em;
+    font-style: normal;
+    font-weight: 400;
+    text-decoration: inherit;
+    text-align: center;
+    speak: none;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.path-format-mintcampus .ui .icon {
+    font-size: 1.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+    margin-right: .5rem;
+}
+
+.path-format-mintcampus span.hide,
+.path-format-mintcampus div.hide,
+.path-format-mintcampus .hidden {
+    display: none;
+}
+
+.path-format-mintcampus .ui.form input:not([type]),
+.path-format-mintcampus .ui.form input[type="date"],
+.path-format-mintcampus .ui.form input[type="datetime-local"],
+.path-format-mintcampus .ui.form input[type="email"],
+.path-format-mintcampus .ui.form input[type="file"],
+.path-format-mintcampus .ui.form input[type="number"],
+.path-format-mintcampus .ui.form input[type="password"],
+.path-format-mintcampus .ui.form input[type="search"],
+.path-format-mintcampus .ui.form input[type="tel"],
+.path-format-mintcampus .ui.form input[type="text"],
+.path-format-mintcampus .ui.form input[type="time"],
+.path-format-mintcampus .ui.form input[type="url"] {
+    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    margin: 0;
+    outline: 0;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    line-height: 1.21428571em;
+    padding: .67857143em 1em;
+    font-size: 1em;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, .15);
+    color: rgba(0, 0, 0, .87);
+    border-radius: .28571429rem;
+    -webkit-box-shadow: 0 0 0 0 transparent inset;
+    box-shadow: 0 0 0 0 transparent inset;
+    -webkit-transition: color .1s ease, border-color .1s ease;
+    transition: color .1s ease, border-color .1s ease;
+}
+.path-format-mintcampus .ui.form input:not([type]),
+.path-format-mintcampus .ui.form input[type="date"],
+.path-format-mintcampus .ui.form input[type="datetime-local"],
+.path-format-mintcampus .ui.form input[type="email"],
+.path-format-mintcampus .ui.form input[type="file"],
+.path-format-mintcampus .ui.form input[type="number"],
+.path-format-mintcampus .ui.form input[type="password"],
+.path-format-mintcampus .ui.form input[type="search"],
+.path-format-mintcampus .ui.form input[type="tel"],
+.path-format-mintcampus .ui.form input[type="text"],
+.path-format-mintcampus .ui.form input[type="time"],
+.path-format-mintcampus .ui.form input[type="url"],
+.path-format-mintcampus .ui.form textarea {
+    width: 95%;
+    vertical-align: top;
+}
+
+.path-format-mintcampus .rating {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 0;
+}
+
+.path-format-mintcampus .rating label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    cursor: pointer;
+}
+
+.path-format-mintcampus .rating label:last-child {
+    position: static;
+}
+
+.path-format-mintcampus .rating label:nth-child(1) {
+    z-index: 5;
+}
+
+.rating label:nth-child(2) {
+    z-index: 4;
+}
+
+.rating label:nth-child(3) {
+    z-index: 3;
+}
+
+.path-format-mintcampus .rating label:nth-child(4) {
+    z-index: 2;
+}
+
+.rating label:nth-child(5) {
+    z-index: 1;
+}
+
+.path-format-mintcampus .rating label input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.path-format-mintcampus .rating label .icon {
+    float: left;
+    color: transparent;
+}
+
+.path-format-mintcampus .rating label:last-child .icon {
+    color: gray;
+}
+
+.path-format-mintcampus .rating:not(:hover) label input:checked ~ .icon,
+.path-format-mintcampus .rating:hover label:hover input ~ .icon {
+    color: gold;
+}
+
+.path-format-mintcampus .rating label input:focus:not(:checked) ~ .icon:last-child {
+    color: gray;
+    text-shadow: 0 0 5px #09f;
+}
+
+.path-format-mintcampus .format-mintcampus .no-overflow {
+    overflow: visible;
+}
+
+.path-format-mintcampus {
+    overflow: visible;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    margin-right: 15px;
+    width: 200px;
+    height: 7px;
+    background: rgb(248 249 250);
+    box-shadow: 0 0 1px #555;
+    border-radius: 5px;
+    background-image: linear-gradient(#1a69a4, #1a69a4);
+    background-size: 70% 100%;
+    background-repeat: no-repeat;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #1a69a4;
+    cursor: ew-resize;
+    box-shadow: 0 0 2px 0 #555;
+    transition: background .3s ease-in-out;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+
+#app {
+    font-family: sans-serif;
+    font-weight: 100;
+    --grey-100: #e4e9f0;
+    --grey-200: #cfd7e3;
+    --grey-300: #b5c0cd;
+    --grey-800: #3e4e63;
+    --grid-gap: 1px;
+    --day-label-size: 20px;
+}
+
+#app ol {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#app .calendar-month {
+    position: relative;
+    background-color: var(--grey-200);
+    border: solid 1px var(--grey-200);
+}
+
+#app .calendar-month-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 10px;
+}
+
+#app .calendar-month-header-selected-month {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#app .calendar-month-header-selectors {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80px;
+}
+
+#app .calendar-month-header-selectors > * {
+    cursor: pointer;
+}
+
+#app .day-of-week {
+    color: var(--grey-800);
+    font-size: 18px;
+    background-color: #fff;
+    padding-bottom: 5px;
+    padding-top: 10px;
+}
+
+#app .day-of-week,
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+#app .day-of-week > * {
+    text-align: right;
+    padding-right: 5px;
+}
+
+#app .days-grid {
+    height: 100%;
+    position: relative;
+    grid-column-gap: var(--grid-gap);
+    grid-row-gap: var(--grid-gap);
+    border-top: solid 1px var(--grey-200);
+}
+
+#app .calendar-day {
+    position: relative;
+    min-height: 37px;
+    font-size: 16px;
+    background-color: #fff;
+    color: var(--grey-800);
+    padding: 5px;
+}
+
+#app .calendar-day > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 2px;
+    width: var(--day-label-size);
+    height: var(--day-label-size);
+}
+
+#app .calendar-day--not-current {
+    background-color: var(--grey-100);
+    color: var(--grey-300);
+}
+
+#app .calendar-day--today {
+    padding-top: 4px;
+}
+
+#app .calendar-day--today > span {
+    color: #fff;
+    border-radius: 9999px;
+    background-color: var(--grey-800);
+}

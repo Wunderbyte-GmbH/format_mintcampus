@@ -1,0 +1,70 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_ratingprompts/prompt
+
+    Template purpose and description.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * none
+
+    Example context (json):
+    {
+    }
+}}
+<div class="path-format-mintcampus">
+    <div class="path-format-mintcampus ui raised segment">
+        <div>
+            <div class="ratings">
+            {{#ratings}}
+            <div class="rating-item">
+            <p>
+                <strong>{{firstname}} {{lastname}}</strong>
+                : <span class="ui label">{{rating}}</span>
+                <i class="fa fa-trash delete-rating float-right" data-ratingid="{{id}}" title="Delete Rating" data-action="deleterating"></i>
+            </p>
+            <p class="timestamp">{{timemodified}}</p>
+            </div>
+            <hr>
+            {{/ratings}}
+            </div>
+            {{^ratings}}
+            {{/ratings}}
+            {{#completionstatus}} {{completionstatus}} {{completed}}{{/completionstatus}}
+            {{^completionstatus}} {{completionstatus}} {{completed}} {{/completionstatus}}
+            <h3 class="rating-heading">{{header}}</h3>
+            <p>{{title}}</p>
+            {{> format_mintcampus/questionts }}
+            <em>{{description}}</em>
+            <p></p>
+            <div class="ui form">
+                <div class="field">
+                    <label for="mintcampus_comment">
+                        <img src="/course/format/mintcampus/pix/user_feedback.png" alt="user_edit">
+                    </label>
+                    <textarea id="mintcampus_comment" type="text" placeholder="{{placeholder}}" rows="4">{{submission}}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

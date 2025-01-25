@@ -1,0 +1,268 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core_courseformat/local/content/section
+
+    Displays a course section.
+
+    Note: This template is a wrapper around the section/content template to allow course formats and theme designers to
+    modify parts of the wrapper without having to copy/paste the entire template.
+
+    Example context (json):
+    {
+        "num": 3,
+        "id": 35,
+        "controlmenu": "[tools menu]",
+        "header": {
+            "name": "Section title",
+            "title": "<a href=\"http://moodle/course/view.php?id=5#section-0\">Section title</a>",
+            "url": "#",
+            "ishidden": true
+        },
+        "cmlist": {
+            "cms": [
+                {
+                    "cmitem": {
+                        "cmformat": {
+                            "cmname": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Forum example</span></a>",
+                            "hasname": "true"
+                        },
+                        "id": 3,
+                        "module": "forum",
+                        "anchor": "activity-3",
+                        "extraclasses": "newmessages"
+                    }
+                },
+                {
+                    "cmitem": {
+                        "cmformat": {
+                            "cmname": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Assign example</span></a>",
+                            "hasname": "true"
+                        },
+                        "id": 4,
+                        "anchor": "activity-4",
+                        "module": "assign",
+                        "extraclasses": ""
+                    }
+                }
+            ],
+            "hascms": true
+        },
+        "ishidden": false,
+        "iscurrent": true,
+        "currentlink": "<span class=\"accesshide\">This topic</span>",
+        "availability": {
+            "info": "<span class=\"badge badge-info\">Hidden from students</span>",
+            "hasavailability": true
+        },
+        "summary": {
+            "summarytext": "Summary text!"
+        },
+        "controlmenu": {
+            "menu": "<a href=\"#\" class=\"d-inline-block dropdown-toggle icon-no-margin\">Edit<b class=\"caret\"></b></a>",
+            "hasmenu": true
+        },
+        "cmcontrols": "[Add an activity or resource]",
+        "iscoursedisplaymultipage": true,
+        "sectionreturnid": 0,
+        "contentcollapsed": false,
+        "insertafter": true,
+        "numsections": 42,
+        "sitehome": false,
+        "highlightedlabel" : "Highlighted"
+    }
+}}
+<style>
+    #forumpost .discussion-nav + div, #forumpost .discussion-nav {
+        display: none !important;
+        list-style: none !important;
+    }
+
+    #forumpost > div > div {
+        display: none !important;
+    }
+
+    #forumcontainer {
+        padding-left: 2px;
+        padding-right: 2px;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #forumcontainer .forumpost {
+        border: 1px solid #d0cdcd;
+        border-radius: 5px;
+        box-shadow: 2px 2px 6px #c4c0c0;
+    }
+
+    #coursecontentcollapse0 .container {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .ftopics-0 ul {
+        webkit-margin-start: 0rem !important;
+    }
+
+    #forumcontainer .forumpost .post-actions a:not(:first-child) {
+        display: none;
+    }
+
+    #forumcontainer .forumpost .post-actions a:first-child {
+        display: block;
+        background: #0f6cbf;
+        text-align: center;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        line-height: 25px;
+    }
+
+    #mintcampusstartcourse {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        line-height: 25px;
+    }
+
+    .mintcampus-generatedimage {
+        border-radius: 5px;
+        min-height: 250px;
+    }
+
+    #mintcampusrating {
+        font: normal normal normal 30px/1 FontAwesome;
+    }
+
+    .ratingtitle {
+        margin-right: 0.5rem;
+        font-weight: bold;
+        align-self: center;
+    }
+
+    #mintcampuscourserating {
+        color: darkgoldenrod;
+    }
+
+    .mintcampus_summary {
+        max-height: 300px;
+        overflow: hidden;
+        padding: 0.5rem;
+    }
+
+    #coursecontentcollapse0 .nolink {
+        cursor: default;
+        pointer-events: none;
+        text-decoration: none;
+        margin-bottom: 0.4rem;
+    }
+
+    #coursecontentcollapse0 .startcourse {
+        margin-top: 1rem;
+        margin-bottom: 0.4rem;
+    }
+
+    #coursecontentcollapse0 .noforumpost {
+        margin-top: 0.8rem;
+    }
+
+</style>
+<ul class="ftopics-0">
+    <li id="section-{{num}}"
+        class="section main"
+        role="region"
+        aria-label="{{sectionname}}"
+        data-sectionid="{{num}}"
+        data-sectionreturnid="{{sectionreturnid}}"
+        data-for="section"
+        data-id="{{id}}"
+        data-number="{{num}}"
+    >
+        <div id="coursecontentcollapse{{num}}" class="content">
+            <div class="container-fluid">
+
+                <div class="row justify-content-between">
+                    <div class="col-9">
+                        {{{scgraphic}}}
+                    </div>
+                    <a class="col-auto aabtn" id="mintcampuscourserating" data-id="{{courseid}}" href="#" style="cursor: pointer;display: flex;text-decoration: none;">
+                        <div class="ratingtitle">{{#str}} ratecourse, format_mintcampus {{/str}}</div>
+                        <div>{{{courserating}}}</div>
+                    </a>
+                </div>
+
+                <div class="row">
+                    {{^generatedimageuri}}
+                        <div class="col-sm">
+                            {{{coursevideoimage}}}
+                        </div>
+                    {{/generatedimageuri}}
+                    {{#generatedimageuri}}
+                        <div class="col-sm mintcampus-generatedimage card-img-bottom text-center info"
+                             style="background-image: url('{{coursevideoimage}}');">
+                        </div>
+                    {{/generatedimageuri}}
+                    <div class="col-sm mintcampus_summary summary">
+                        {{{summary}}}
+                    </div>
+                </div>
+
+                {{#forumpost}}
+                    <div id="forumcontainer" class="row justify-content-center">
+                        <div id="forumpost" class="col">
+                            {{{forumpost}}}
+                        </div>
+                    </div>
+                {{/forumpost}}
+
+                {{#startcourseurl}}
+                    {{^coursecompleted}}
+                        <div class="row justify-content-center startcourse">
+                            <div class="col-5 btn btn-primary">{{{startcourse}}}</div>
+                        </div>
+                    {{/coursecompleted}}
+
+                    {{#coursecompleted}}
+                        <div class="row justify-content-center startcourse">
+                            <div class="col-5 btn btn-success nolink">{{{startcourse}}}</div>
+                        </div>
+                    {{/coursecompleted}}
+                {{/startcourseurl}}
+                {{^startcourseurl}}
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="alert alert-info startcourse">
+                                {{#str}}noactivity,format_mintcampus{{/str}}
+                            </p>
+                        </div>
+                    </div>
+                {{/startcourseurl}}
+            </div>
+        </div>
+    </li>
+</ul>
+{{#js}}
+    require(['jquery'], function($) {
+    $("#forumcontainer .forumpost .post-actions a:first-child").html('Forum post');
+    });
+    require(['format_mintcampus/prompt'], function(prompt){
+    prompt.init();});
+    require(['format_mintcampus/rating_delete'], function(prompt){
+    prompt.init();});
+    require(['format_mintcampus/hide_from_index'], function(hide_from_index){
+    hide_from_index.init({{courseid}});});
+{{/js}}
