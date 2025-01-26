@@ -85,11 +85,20 @@ $functions = array(
     'format_mintcampus_delete_rating' => [
         'classname'   => 'format_mintcampus_external',
         'methodname'  => 'delete_rating',
-        'classpath'   => 'course/format/mintcampus/externallib.php',
-        'description' => 'Delete a rating from the database.',
+        'classpath'   => 'course/format/mintcampus/external.php',
+        'description' => 'Delete a rating by ID',
         'type'        => 'write',
         'ajax'        => true,
-        'capabilities'=> 'moodle/course:manageactivities',
-    ]
+        'capabilities'=> '',
+    ],
+    'format_mintcampus_delete_comment' => [
+        'classname'   => 'format_mintcampus_external',
+        'methodname'  => 'delete_comment',
+        'classpath'   => 'course/format/mintcampus/external.php',
+        'description' => 'Delete a comment by ID',
+        'type'        => 'write',
+        'ajax'        => true,
+        'capabilities'=> '',
+    ],
     );
 

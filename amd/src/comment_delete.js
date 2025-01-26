@@ -1,8 +1,12 @@
 /**
- * mintcampus Course Format settings
+ * Mintcampus Course Format - Comment Management
+ *
+ * This module manages the deletion of course comments within the Mintcampus format.
+ * It provides functionalities such as confirmation modals, AJAX requests, and 
+ * DOM updates to remove deleted comments dynamically.
  *
  * @package    format_mintcampus
- * @version    See the value of '$plugin->version' in the version.php file.
+ * @version    Refer to '$plugin->version' in the version.php file.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
@@ -10,52 +14,55 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/modal_fact
     function ($, Ajax, Notification, Str, ModalFactory, ModalEvents, Pending) {
 
         /**
-         * Initializes the delete rating functionality.
+         * Initializes the delete comment functionality by attaching event listeners
+         * to dynamically loaded elements and handling comment deletions via AJAX.
+         * 
          * @method init
          * @private
          */
         const init = function () {
-            console.log("init");
-            var pendingPromise = new Pending('format_mintcampus/rating_delete:init');
+            console.log("Delete comment module initialized");
 
-            // Full-body event listener to handle dynamically added elements
-            $('body').on('click', '[data-ratingid]', function () {
-                const ratingid = $(this).data('ratingid');
-                console.log("Clicked on rating with ID:", ratingid);
+            var pendingPromise = new Pending('format_mintcampus/comment_delete:init');
 
-                // Trigger custom event with ratingid
-                $(this).trigger('deleteRating', { ratingid: ratingid });
+            // Attach event listener for dynamically added elements with data-commentid
+            $('body').on('click', '[data-commentid]', function () {
+                const commentid = $(this).data('commentid');
+                console.log("Delete button clicked for comment ID:", commentid);
 
+                // Trigger custom event with the comment ID
+                $(this).trigger('deleteComment', { commentid: commentid });
+
+                // Display confirmation modal before proceeding with deletion
                 ModalFactory.create({
                     title: Str.get_string('confirmdeletion', 'format_mintcampus'),
-                    body: Str.get_string('confirmdeletemsg', 'format_mintcampus'),
+                    body: Str.get_string('confirmdeletecommentmsg', 'format_mintcampus'),
                     type: ModalFactory.types.SAVE_CANCEL
                 }).then(function (modal) {
                     modal.setSaveButtonText(Str.get_string('delete', 'core'));
                 
-                    // Handle save (delete confirmation)
+                    // Handle delete confirmation event
                     modal.getRoot().on(ModalEvents.save, function (e) {
                         e.preventDefault();
                 
-                        // Perform AJAX request to delete rating
+                        // Perform AJAX request to delete the comment
                         Ajax.call([{
-                            methodname: 'format_mintcampus_delete_rating',
-                            args: { ratingid: ratingid }
+                            methodname: 'format_mintcampus_delete_comment',
+                            args: { commentid: commentid }
                         }])[0].then(function (response) {
                             if (response.status === 'success') {
                                 Notification.alert(
                                     Str.get_string('deletionsuccess', 'format_mintcampus'),
-                                    Str.get_string('ratingsuccessfullydeleted', 'format_mintcampus'),
+                                    Str.get_string('commentsuccessfullydeleted', 'format_mintcampus'),
                                     Str.get_string('close', 'format_mintcampus')
                                 );
-                                
-                                // Remove the rating item from the DOM
-                                // Find the closest .ratings container and remove it
-                                $(`[data-ratingid="${ratingid}"]`).parents('.rating-item').fadeOut(300, function () {
+
+                                // Remove the closest .comment-item element from the DOM
+                                $(`[data-commentid="${commentid}"]`).parents('.comment').fadeOut(300, function () {
                                     setTimeout(() => $(this).remove(), 300);
-                                }); 
-             
-                                // Close the modal after success
+                                });
+
+                                // Close the modal upon successful deletion
                                 modal.hide();
                             } else {
                                 Notification.alert(
@@ -69,7 +76,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/modal_fact
                         }).always(pendingPromise.resolve);
                     });
                 
-                    // Handle hidden event (cleanup)
+                    // Cleanup modal instance when closed
                     modal.getRoot().on(ModalEvents.hidden, function () {
                         modal.destroy();
                     });
@@ -78,9 +85,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/modal_fact
                 }).catch(Notification.exception);                
             });
 
-            // Custom event listener for deleteRating event
-            $('body').on('deleteRating', function (event, data) {
-                console.log('Custom deleteRating event triggered for rating ID:', data.ratingid);
+            // Custom event listener for comment deletion trigger
+            $('body').on('deleteComment', function (event, data) {
+                console.log('Custom deleteComment event triggered for comment ID:', data.commentid);
             });
         };
 

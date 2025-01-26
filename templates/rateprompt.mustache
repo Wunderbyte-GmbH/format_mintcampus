@@ -44,6 +44,12 @@
                 <i class="fa fa-trash delete-rating float-right" data-ratingid="{{id}}" title="Delete Rating" data-action="deleterating"></i>
             </p>
             <p class="timestamp">{{timemodified}}</p>
+            {{#submission}}
+            <p class="comment">
+            <i class="fa fa-trash delete-comment float-right" data-commentid="{{commentid}}" title="Delete Comment" data-action="deletecomment"></i>
+            {{submission}}
+            </p>            
+            {{/submission}}
             </div>
             <hr>
             {{/ratings}}

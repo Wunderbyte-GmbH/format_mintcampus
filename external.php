@@ -391,8 +391,14 @@ class format_mintcampus_external extends external_api {
 
         $context = \context_course::instance($courseid);
         $ratings = [];
-        if (has_capability('moodle/course:manage', $context, $userid) || is_siteadmin()) {
+        if (has_capability('moodle/course:update', $context, $userid)) {
             $ratings = get_course_ratings_with_comments($courseid);
+        }
+
+        try {
+            $completionstatus = \core_completion_external::get_course_completion_status($courseid, $USER->id)['completed'] ? 1 : null;
+        } catch (Exception $e) {
+            $completionstatus = null;
         }
 
         $data = [
@@ -402,7 +408,7 @@ class format_mintcampus_external extends external_api {
             'title'=> '',
             'comment' => get_string('courseratingcomment','format_mintcampus'),
             'placeholder' => get_string('placeholder','format_mintcampus'),
-            'completionstatus' => \core_completion_external::get_course_completion_status($courseid, $USER->id)['completed'] ? 1 : null,
+            'completionstatus' => $completionstatus ? 1 : null,
             'completed' => $completed,
             'ratings' => $ratings
         ];
@@ -584,7 +590,6 @@ class format_mintcampus_external extends external_api {
      */
     public static function delete_rating($ratingid) {
         global $DB;
-
         // Validate and normalize parameters.
         $params = self::validate_parameters(self::delete_rating_parameters(), ['ratingid' => $ratingid]);
 
@@ -613,4 +618,57 @@ class format_mintcampus_external extends external_api {
             'message' => new external_value(PARAM_TEXT, 'Message describing the operation result.')
         ]);
     }
+
+    /**
+     * Returns description of delete_comment parameters.
+     *
+     * @return external_function_parameters
+     */
+    public static function delete_comment_parameters() {
+        return new external_function_parameters (
+            array(
+                'commentid' => new external_value(PARAM_INT, 'The ID of the rating to be deleted.')
+            )
+        );
+    }
+
+    /**
+     * Deletes a comment entry from the database.
+     *
+     * @param int $commentid The ID of the comment to delete.
+     * @return array Status message of deletion.
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     */
+    public static function delete_comment($commentid) {
+        global $DB, $USER;
+
+        // Validate parameters
+        $params = self::validate_parameters(self::delete_comment_parameters(), array('commentid' => $commentid));
+
+        $commentid = $params['commentid'];
+
+        // Check if the comment exists before deleting
+        if ($DB->record_exists('format_mintcampus_comments', array('id' => $commentid))) {
+            $DB->delete_records('format_mintcampus_comments', array('id' => $commentid));
+            $response = array('status' => 'success', 'message' => 'Comment deleted successfully.');
+        } else {
+            $response = array('status' => 'error', 'message' => 'Comment not found.');
+        }
+
+        return $response;
+    }
+
+    /**
+     * Returns description of delete_comment result values.
+     *
+     * @return external_single_structure
+     */
+    public static function delete_comment_returns() {
+        return new external_single_structure(array(
+            'status' => new external_value(PARAM_TEXT, 'Status of the delete operation.'),
+            'message' => new external_value(PARAM_TEXT, 'Message describing the operation result.')
+        ));
+    }
 }
+

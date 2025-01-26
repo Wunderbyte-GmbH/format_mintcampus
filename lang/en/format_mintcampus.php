@@ -169,6 +169,10 @@ $string['noforumpost'] = 'No post on the forum yet.';
 $string['nocoursesummary'] = 'Please add course summary.';
 $string['nosectionactivity'] = 'Please add activity';
 $string['hidefrommenu'] = 'Hide from menu';
+$string['confirmdeletemsg'] = 'Really delete rating?';
+$string['ratingsuccessfullydeleted'] = 'Rating successfully deleted.';
+$string['commentsuccessfullydeleted'] = 'Kommmentar erfolgreich gelöscht.';
+
 
 // Exception messages.
 $string['cannotconvertuploadedimagetodisplayedimage'] = 'Cannot convert uploaded image to displayed image - {$a}.  Please report error details and the information contained in the php.log file to developer.';

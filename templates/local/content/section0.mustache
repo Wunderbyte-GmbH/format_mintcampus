@@ -261,8 +261,10 @@
     });
     require(['format_mintcampus/prompt'], function(prompt){
     prompt.init();});
-    require(['format_mintcampus/rating_delete'], function(prompt){
-    prompt.init();});
+    require(['format_mintcampus/rating_delete'], function(rating_delete){
+    rating_delete.init();});
+    require(['format_mintcampus/comment_delete'], function(comment_delete){
+    comment_delete.init();});
     require(['format_mintcampus/hide_from_index'], function(hide_from_index){
     hide_from_index.init({{courseid}});});
 {{/js}}

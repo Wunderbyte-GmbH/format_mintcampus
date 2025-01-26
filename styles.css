@@ -1114,3 +1114,12 @@ input[type=range]::-webkit-slider-runnable-track {
     border-radius: 9999px;
     background-color: var(--grey-800);
 }
+
+.path-format-mintcampus.ui .rating-item {
+    padding-right: 20px;
+}
+
+.path-format-mintcampus.ui .ratings {
+    max-height: 300px;
+    overflow-y: scroll;
+} 

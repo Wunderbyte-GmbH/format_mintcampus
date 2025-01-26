@@ -634,12 +634,12 @@ class content extends content_base {
         $starsnum = 5;
         $rating = $DB->get_record_sql(
             "SELECT
-                    courseid,
-                    COUNT(courseid) as reviewsnum,
-                    AVG(rating) AS score
-                FROM {format_mintcampus_ratings}
-                WHERE courseid = :courseid
-                GROUP BY courseid",
+    courseid,
+    COUNT(courseid) AS reviewsnum,
+    AVG(rating::NUMERIC) AS score
+FROM m_format_mintcampus_ratings
+WHERE courseid = $1
+GROUP BY courseid",
             array('courseid' => $course->id)
         );
 

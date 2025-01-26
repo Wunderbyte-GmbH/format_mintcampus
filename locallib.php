@@ -152,16 +152,20 @@ function get_course_ratings_with_comments($courseid = null) {
     global $DB;
 
     $sql = "SELECT
-                r.id,
-                r.courseid,
-                r.userid,
-                u.firstname,
-                u.lastname,
-                r.rating,
-                r.timemodified
-            FROM {format_mintcampus_ratings} r
-            JOIN {user} u ON r.userid = u.id";
-            // LEFT JOIN {format_mintcampus_comments} c ON r.userid = c.userid AND r.courseid = c.courseid
+            r.id,
+            r.courseid,
+            r.userid,
+            u.firstname,
+            u.lastname,
+            r.rating,
+            r.timemodified,
+            c.submission AS submission,
+            c.id AS commentid
+        FROM {format_mintcampus_ratings} r
+        JOIN {user} u ON r.userid = u.id
+        LEFT JOIN {format_mintcampus_comments} c 
+            ON r.userid = c.userid 
+            AND r.courseid = c.courseid";
 
     $params = [];
     if (!empty($courseid)) {
@@ -170,6 +174,13 @@ function get_course_ratings_with_comments($courseid = null) {
     }
 
     $sql .= " ORDER BY r.timemodified DESC";
+    $records = $DB->get_records_sql($sql, $params);
 
-    return array_values($DB->get_records_sql($sql, $params));
+    foreach ($records as &$record) {
+        if (isset($record->timemodified)) {
+            // Convert the timestamp to a German date format (e.g., DD.MM.YYYY HH:MM:SS)
+            $record->timemodified = date('d.m.Y', $record->timemodified);
+        }
+    }
+    return array_values($records);
 }
