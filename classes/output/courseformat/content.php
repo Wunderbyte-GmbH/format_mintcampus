@@ -78,7 +78,7 @@ class content extends content_base {
             'editing' => $editing,
         ];
 
-        $singlesection = $this->format->get_section_number();
+        $singlesection = $this->format->get_sectionnum();
         $sections = $this->export_sections($output);
         $initialsection = '';
         $course = $format->get_course();
@@ -629,56 +629,57 @@ class content extends content_base {
         $section=$sections[0];
         // Generate section list
 
-//        $courserating = \html_writer::tag('i','',['id'=>'mintcampusrating','class'=>'fa fa-star-half-o fa-3','aria-hidden'=>'true']);
+        // $courserating = \html_writer::tag('i','',['id'=>'mintcampusrating','class'=>'fa fa-star-half-o fa-3','aria-hidden'=>'true']);
         $courserating = '';
         $starsnum = 5;
         $rating = $DB->get_record_sql(
             "SELECT
-    courseid,
-    COUNT(courseid) AS reviewsnum,
-    AVG(rating::NUMERIC) AS score
-FROM m_format_mintcampus_ratings
-WHERE courseid = $1
-GROUP BY courseid",
+                courseid,
+                COUNT(courseid) AS reviewsnum,
+                AVG(rating::NUMERIC) AS score
+            FROM m_format_mintcampus_ratings
+            WHERE courseid = $1
+            GROUP BY courseid",
             array('courseid' => $course->id)
         );
 
+        $starsoutput = '';
         if ($rating) {
             $courserating = $rating->score;
             $reviews = $rating->reviewsnum;
                     // Localize the rating (replace the decimal point with a comma)
-        $loccourserating = str_replace('.', ',', number_format($courserating, 1));
+            $loccourserating = str_replace('.', ',', number_format($courserating, 1));
 
-        // Initialize variables for star count
-        $fullstars = floor($courserating);  // Number of full stars
-        $halfstars = ($courserating - $fullstars >= 0.5) ? 1 : 0;  // Half star if decimal >= 0.5
-        $emptystars = $starsnum - ($fullstars + $halfstars);  // Remaining stars will be empty
+            // Initialize variables for star count
+            $fullstars = floor($courserating);  // Number of full stars
+            $halfstars = ($courserating - $fullstars >= 0.5) ? 1 : 0;  // Half star if decimal >= 0.5
+            $emptystars = $starsnum - ($fullstars + $halfstars);  // Remaining stars will be empty
 
-        // Start rendering the stars
-        $starsoutput = '';
-        for ($i = 0; $i < $fullstars; $i++) {
-            $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star fa-3', 'aria-hidden' => 'true']);
-        }
+            // Start rendering the stars
+            
+            for ($i = 0; $i < $fullstars; $i++) {
+                $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star fa-3', 'aria-hidden' => 'true']);
+            }
 
-        if ($halfstars) {
-            $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star-half-o fa-3', 'aria-hidden' => 'true']);
-        }
+            if ($halfstars) {
+                $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star-half-o fa-3', 'aria-hidden' => 'true']);
+            }
 
-        for ($i = 0; $i < $emptystars; $i++) {
-            $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star-o fa-3', 'aria-hidden' => 'true']);
-        }
+            for ($i = 0; $i < $emptystars; $i++) {
+                $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star-o fa-3', 'aria-hidden' => 'true']);
+            }
 
-        $courserating = '<div class="rating-container">
-        <div class="rating-number">' . $loccourserating . '
-        </div>
-        <div>
-        <div class="stars">
-            ' . $starsoutput . '
-        </div>
-        <div class="review-text">
-            Aus '. $reviews . ' Bewertungen
-        </div>
-    </div> </div>';
+            $courserating = '<div class="rating-container">
+            <div class="rating-number">' . $loccourserating . '
+            </div>
+            <div>
+            <div class="stars">
+                ' . $starsoutput . '
+            </div>
+            <div class="review-text">
+                Aus '. $reviews . ' Bewertungen
+            </div>
+        </div> </div>';
         } else {
             for ($i = 0; $i < 5; $i++) {
                 $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star-o fa-3', 'aria-hidden' => 'true']);
@@ -702,7 +703,7 @@ GROUP BY courseid",
         $data = (object)[
             'num' => $section->section ?? '0',
             'id' => $section->id,
-            'sectionreturn' => $format->get_section_number(),
+            'sectionreturn' => $format->get_sectionnum(),
             'insertafter' => false,
             'summary' => $this->make_course_summary($course,250),
             'highlightedlabel' => $format->get_section_highlighted_name(),

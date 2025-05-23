@@ -46,6 +46,9 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class cmname extends \core_courseformat\output\local\content\cm\cmname {
+    protected $section;
+
+    protected $editable;
     /**
      * Constructor.
      *

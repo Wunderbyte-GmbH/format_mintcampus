@@ -51,7 +51,7 @@ class controlmenu extends \core_courseformat\output\local\content\cm\controlmenu
     protected $format;
 
     /** @var section_info the section object */
-    private $section;
+    protected $section;
 
     /** @var action_menu the activity aciton menu */
     protected $menu;
@@ -127,7 +127,7 @@ class controlmenu extends \core_courseformat\output\local\content\cm\controlmenu
         $menu->set_owner_selector($ownerselector);
 
         $constraint = $displayoptions['constraintselector'] ?? '.course-content';
-        $menu->set_constraint($constraint);
+        //$menu->set_boundary($constraint);
 
         foreach ($controls as $control) {
             if ($control instanceof action_menu_link) {
@@ -153,7 +153,7 @@ class controlmenu extends \core_courseformat\output\local\content\cm\controlmenu
     protected function cm_control_items() {
         $format = $this->format;
         $mod = $this->mod;
-        $sectionreturn = $format->get_section_number();
+        $sectionreturn = $format->get_sectionnum();
         if (!empty($this->displayoptions['disableindentation']) || !$format->uses_indentation()) {
             $indent = -1;
         } else {

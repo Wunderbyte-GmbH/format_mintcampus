@@ -75,7 +75,7 @@ class section extends \core_courseformat\output\local\content\section {
         $data = (object)[
             'num' => $section->section ?? '0',
             'id' => $section->id,
-            'sectionreturn' => $format->get_section_number(),
+            'sectionreturn' => $format->get_sectionnum(),
             'insertafter' => false,
             'summary' => $summary->export_for_template($output),
             'highlightedlabel' => $format->get_section_highlighted_name(),
@@ -108,7 +108,7 @@ class section extends \core_courseformat\output\local\content\section {
         $format = $this->format;
 
         $showsummary = ($section->section != 0 &&
-            $section->section != $format->get_section_number() &&
+            $section->section != $format->get_sectionnum() &&
             $format->get_course_display() == COURSE_DISPLAY_MULTIPAGE &&
             !$format->show_editor()
         );
