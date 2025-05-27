@@ -16,7 +16,7 @@
 
 /**
  * Contains the default section availability output class.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
@@ -37,16 +37,17 @@ use stdClass;
 
 /**
  * Base class to render section availability.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class availability extends \core_courseformat\output\local\content\section\availability {
-
     use courseformat_named_templatable;
 
+    protected $section;
+    
     /**
      * Constructor.
      *
@@ -54,7 +55,7 @@ class availability extends \core_courseformat\output\local\content\section\avail
      * @param section_info $section the section info
      */
     public function __construct(course_format $format, section_info $section) {
-        parent::__construct($format,$section);
+        parent::__construct($format, $section);
         $this->format = $format;
         $this->section = $section;
     }
@@ -159,7 +160,7 @@ class availability extends \core_courseformat\output\local\content\section\avail
 
         $data = (object)[
             'text' => $text,
-            'classes' => $additionalclasses
+            'classes' => $additionalclasses,
         ];
         $additionalclasses = array_filter(explode(' ', $additionalclasses));
 

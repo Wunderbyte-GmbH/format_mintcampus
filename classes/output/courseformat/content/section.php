@@ -45,7 +45,6 @@ require_once($CFG->dirroot . '/course/format/mintcampus/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class section extends \core_courseformat\output\local\content\section {
-
     /**
      * Constructor.
      *
@@ -80,7 +79,9 @@ class section extends \core_courseformat\output\local\content\section {
             'summary' => $summary->export_for_template($output),
             'highlightedlabel' => $format->get_section_highlighted_name(),
             'sitehome' => $course->id == SITEID,
-            'editing' => $PAGE->user_is_editing()
+            'editing' => $PAGE->user_is_editing(),
+            'displayonesection' => ($course->id != SITEID && $format->get_sectionid() == $section->id),
+            'sectionname' => $format->get_section_name($section),
         ];
 
         $haspartials = [];
@@ -89,6 +90,7 @@ class section extends \core_courseformat\output\local\content\section {
         $haspartials['editor'] = $this->add_editor_data($data, $output);
         $haspartials['header'] = $this->add_header_data($data, $output);
         $haspartials['cm'] = $this->add_cm_data($data, $output);
+
         $this->add_format_data($data, $haspartials, $output);
 
         return $data;
@@ -135,5 +137,4 @@ class section extends \core_courseformat\output\local\content\section {
         }
         return $result;
     }
-
 }

@@ -16,7 +16,7 @@
 
 /**
  * Contains the default activity control menu.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
@@ -37,14 +37,13 @@ use stdClass;
 
 /**
  * Base class to render a course module menu inside a course format.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class controlmenu extends \core_courseformat\output\local\content\cm\controlmenu {
-
     use courseformat_named_templatable;
 
     /** @var course_format the course format */
@@ -127,7 +126,7 @@ class controlmenu extends \core_courseformat\output\local\content\cm\controlmenu
         $menu->set_owner_selector($ownerselector);
 
         $constraint = $displayoptions['constraintselector'] ?? '.course-content';
-        //$menu->set_boundary($constraint);
+        // $menu->set_boundary($constraint);
 
         foreach ($controls as $control) {
             if ($control instanceof action_menu_link) {

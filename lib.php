@@ -78,10 +78,12 @@ class format_mintcampus extends core_courseformat\base {
             foreach ($this->settings as $settingname => $settingvalue) {
                 if (isset($settingvalue)) {
                     $settingvtype = gettype($settingvalue);
-                    if ((($settingvtype == 'string') && ($settingvalue === '-')) ||
-                        (($settingvtype == 'integer') && ($settingvalue === 0))) {
+                    if (
+                        (($settingvtype == 'string') && ($settingvalue === '-')) ||
+                        (($settingvtype == 'integer') && ($settingvalue === 0))
+                    ) {
                         // Default value indicator is a hyphen or a number equal to 0.
-                        $this->settings[$settingname] = get_config('format_mintcampus', 'default'.$settingname);
+                        $this->settings[$settingname] = get_config('format_mintcampus', 'default' . $settingname);
                     }
                 }
             }
@@ -118,8 +120,11 @@ class format_mintcampus extends core_courseformat\base {
     public function get_section_name($section) {
         $thesection = $this->get_section($section);
         if ((string)$thesection->name !== '') {
-            return format_string($thesection->name, true,
-                ['context' => context_course::instance($this->courseid)]);
+            return format_string(
+                $thesection->name,
+                true,
+                ['context' => context_course::instance($this->courseid)]
+            );
         } else {
             return $this->get_default_section_name($thesection);
         }
@@ -165,7 +170,7 @@ class format_mintcampus extends core_courseformat\base {
      *     'sr' (int) used by multipage formats to specify to which section to return
      * @return null|moodle_url
      */
-    public function get_view_url($section, $options = array()) {
+    public function get_view_url($section, $options = []) {
         global $CFG;
         $course = $this->get_course();
         $url = new moodle_url('/course/view.php', ['id' => $course->id]);
@@ -196,7 +201,7 @@ class format_mintcampus extends core_courseformat\base {
                 if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
                     return null;
                 }
-                $url->set_anchor('section-'.$sectionno);
+                $url->set_anchor('section-' . $sectionno);
             }
         }
         return $url;
@@ -229,18 +234,20 @@ class format_mintcampus extends core_courseformat\base {
      * @return void
      */
     public function extend_course_navigation($navigation, navigation_node $node) {
-        global $PAGE,$COURSE;
+        global $PAGE, $COURSE;
 
-        $cmid = optional_param('id',0,PARAM_INT);
-        if($cmid<>0){
-            $PAGE->requires->js_call_amd('format_mintcampus/activitynavigation', 'init',array($cmid));
+        $cmid = optional_param('id', 0, PARAM_INT);
+        if ($cmid <> 0) {
+            $PAGE->requires->js_call_amd('format_mintcampus/activitynavigation', 'init', [$cmid]);
         }
 
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
-            if ($selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
-                    $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
+            if (
+                $selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
+                    $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
+            ) {
                 $navigation->includesectionnum = $selectedsection;
             }
         }
@@ -315,72 +322,72 @@ class format_mintcampus extends core_courseformat\base {
             } else { // Existing course that may not have 'numsections' - see get_last_section().
                 global $DB;
                 $defaultnumsections = $DB->get_field_sql('SELECT max(section) from {course_sections}
-                    WHERE course = ?', array($courseid));
+                    WHERE course = ?', [$courseid]);
             }
-            $courseformatoptions = array(
-                'numsections' => array(
+            $courseformatoptions = [
+                'numsections' => [
                     'default' => $defaultnumsections,
                     'type' => PARAM_INT,
-                ),
-                'hiddensections' => array(
+                ],
+                'hiddensections' => [
                     'default' => 1,
-                    'type' => PARAM_INT
-                ),
-                'mintcampuscoursevideo_filemanager' => array(
+                    'type' => PARAM_INT,
+                ],
+                'mintcampuscoursevideo_filemanager' => [
                     'default' => false,
-                    'type' => PARAM_INT
-                ),
-                'mintcampuscourseimage_filemanager' => array(
+                    'type' => PARAM_INT,
+                ],
+                'mintcampuscourseimage_filemanager' => [
                     'default' => false,
-                    'type' => PARAM_INT
-                )
-            );
+                    'type' => PARAM_INT,
+                ],
+            ];
         }
         if ($foreditform && !isset($courseformatoptions['numsections']['label'])) {
             if (is_null($courseconfig)) {
                 $courseconfig = get_config('moodlecourse');
             }
-            $sectionmenu = array();
+            $sectionmenu = [];
             for ($i = 0; $i <= $courseconfig->maxsections; $i++) {
                 $sectionmenu[$i] = "$i";
             }
-            $courseformatoptionsedit = array(
-                'mintcampuscoursevideo_filemanager' => array(
+            $courseformatoptionsedit = [
+                'mintcampuscoursevideo_filemanager' => [
                     'label' => new lang_string('mintcampuscoursevideo_filemanager', 'format_mintcampus'),
                     'element_type' => 'filemanager',
-                    'element_attributes' => [[], array(
+                    'element_attributes' => [[], [
                         'subdirs' => 0,
                         'maxfiles' => 1,
-                        'accepted_types' => array('.mov','.mp4')
-                    )],
+                        'accepted_types' => ['.mov', '.mp4'],
+                    ]],
                     'help' => 'mintcampuscoursevideo_filemanager',
                     'help_component' => 'format_mintcampus',
-                ),'mintcampuscourseimage_filemanager' => array(
+                ], 'mintcampuscourseimage_filemanager' => [
                     'label' => new lang_string('mintcampuscourseimage_filemanager', 'format_mintcampus'),
                     'element_type' => 'filemanager',
-                    'element_attributes' => [[], array(
+                    'element_attributes' => [[], [
                         'subdirs' => 0,
                         'maxfiles' => 1,
-                        'accepted_types' => array('.png', '.jpg')
-                    )],
+                        'accepted_types' => ['.png', '.jpg'],
+                    ]],
                     'help' => 'mintcampuscourseimage_filemanager',
                     'help_component' => 'format_mintcampus',
-                ),
-                'numsections' => array(
+                ],
+                'numsections' => [
                     'label' => new lang_string('numbersections', 'format_mintcampus'),
                     'element_type' => 'select',
-                    'element_attributes' => array($sectionmenu),
-                ),
-                'hiddensections' => array(
+                    'element_attributes' => [$sectionmenu],
+                ],
+                'hiddensections' => [
                     'label' => new lang_string('hiddensections'),
                     'help' => 'hiddensections',
                     'help_component' => 'moodle',
                     'element_type' => 'hidden',
-                    'element_attributes' => array(
-                        array(1 => new lang_string('hiddensectionsinvisible'))
-                    ),
-                )
-            );
+                    'element_attributes' => [
+                        [1 => new lang_string('hiddensectionsinvisible')],
+                    ],
+                ],
+            ];
 
             $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
@@ -397,8 +404,8 @@ class format_mintcampus extends core_courseformat\base {
      * @return array Updated value array with the added default entry.
      */
     private function generate_default_entry($settingname, $defaultindex, $values) {
-        $defaultvalue = get_config('format_mintcampus', 'default'.$settingname);
-        $defarray = array($defaultindex => new lang_string('default', 'format_mintcampus', $values[$defaultvalue]));
+        $defaultvalue = get_config('format_mintcampus', 'default' . $settingname);
+        $defarray = [$defaultindex => new lang_string('default', 'format_mintcampus', $values[$defaultvalue])];
 
         return array_replace($defarray, $values);
     }
@@ -417,7 +424,8 @@ class format_mintcampus extends core_courseformat\base {
         MoodleQuickForm::registerElementType(
             'sectionfilemanager',
             "$CFG->dirroot/course/format/mintcampus/form/sectionfilemanager.php",
-            'MoodleQuickForm_sectionfilemanager');
+            'MoodleQuickForm_sectionfilemanager'
+        );
 
         $elements = parent::create_edit_form_elements($mform, $forsection);
 
@@ -440,18 +448,18 @@ class format_mintcampus extends core_courseformat\base {
         }
 
 
-        //course video
+        // course video
         $fs = get_file_storage();
         $coursecontext = context_course::instance($this->courseid);
         $usercontext = context_user::instance($USER->id);
 
-        $data = new stdClass;
+        $data = new stdClass();
         $fileitemid = $this->get_mintcampuscoursevideo_filemanager();
         $fs->delete_area_files($usercontext->id, 'user', 'draft', $this->courseid);
         $data = file_prepare_standard_filemanager(
             $data,
             'mintcampuscoursevideo',
-            array('accepted_types' => ['.mov','.mp4'], 'maxfiles' => 1),
+            ['accepted_types' => ['.mov', '.mp4'], 'maxfiles' => 1],
             $coursecontext,
             'format_mintcampus',
             'mintcampuscoursevideo_filearea',
@@ -465,16 +473,16 @@ class format_mintcampus extends core_courseformat\base {
             }
         }
 
-        //course image
+        // course image
         $fs = get_file_storage();
 
-        $data = new stdClass;
+        $data = new stdClass();
         $fileitemid = $this->get_mintcampuscourseimage_filemanager();
         $fs->delete_area_files($usercontext->id, 'user', 'draft', $this->courseid);
         $data = file_prepare_standard_filemanager(
             $data,
             'mintcampuscourseimage',
-            array('accepted_types' => ['.png','.jpg'], 'maxfiles' => 1),
+            ['accepted_types' => ['.png', '.jpg'], 'maxfiles' => 1],
             $coursecontext,
             'format_mintcampus',
             'mintcampuscourseimage_filearea',
@@ -521,7 +529,7 @@ class format_mintcampus extends core_courseformat\base {
                         /* If previous format does not have the field 'numsections' and $data['numsections'] is not set,
                            we fill it with the maximum section number from the DB. */
                         $maxsection = $DB->get_field_sql('SELECT max(section) from {course_sections}
-                            WHERE course = ?', array($this->courseid));
+                            WHERE course = ?', [$this->courseid]);
                         if ($maxsection) {
                             // If there are no sections, or just default 0-section, 'numsections' will be set to default.
                             $data['numsections'] = $maxsection;
@@ -539,15 +547,14 @@ class format_mintcampus extends core_courseformat\base {
         }
 
         if (!empty($data)) {
-
-            //course video
+            // course video
             // Used optional_param() instead of using $_POST and $_GET.
             $contextid = context_course::instance($this->courseid);
             if (!empty($data->mintcampuscoursevideo_filemanager)) {
                 file_postupdate_standard_filemanager(
                     $data,
                     'mintcampuscoursevideo',
-                    array ('accepted_types' => ['.mov','.mp4'], 'maxfiles' => 1),
+                    ['accepted_types' => ['.mov', '.mp4'], 'maxfiles' => 1],
                     $contextid,
                     'format_mintcampus',
                     'mintcampuscoursevideo_filearea',
@@ -557,12 +564,12 @@ class format_mintcampus extends core_courseformat\base {
 
             $this->set_mintcampuscoursevideo_filemanager($data->mintcampuscoursevideo_filemanager);
 
-            //course image
+            // course image
             if (!empty($data->mintcampuscourseimage_filemanager)) {
                 file_postupdate_standard_filemanager(
                     $data,
                     'mintcampuscourseimage',
-                    array ('accepted_types' => ['.png','.jpg'], 'maxfiles' => 1),
+                    ['accepted_types' => ['.png', '.jpg'], 'maxfiles' => 1],
                     $contextid,
                     'format_mintcampus',
                     'mintcampuscourseimage_filearea',
@@ -571,7 +578,6 @@ class format_mintcampus extends core_courseformat\base {
             }
 
             $this->set_mintcampuscourseimage_filemanager($data->mintcampuscourseimage_filemanager);
-
         }
         $data = (array) $data;
 
@@ -581,7 +587,7 @@ class format_mintcampus extends core_courseformat\base {
             // If the numsections was decreased, try to completely delete the orphaned sections (unless they are not empty).
             $numsections = (int)$data['numsections'];
             $maxsection = $DB->get_field_sql('SELECT max(section) from {course_sections}
-                WHERE course = ?', array($this->courseid));
+                WHERE course = ?', [$this->courseid]);
             for ($sectionnum = $maxsection; $sectionnum > $numsections; $sectionnum--) {
                 if (!$this->delete_section($sectionnum, false)) {
                     break;
@@ -595,81 +601,81 @@ class format_mintcampus extends core_courseformat\base {
     public function section_format_options($foreditform = false) {
         static $sectionformatoptions = false;
         if ($sectionformatoptions === false) {
-            $sectionformatoptions = array(
-                'sectionimage_filemanager' => array(
+            $sectionformatoptions = [
+                'sectionimage_filemanager' => [
                     'default' => '',
-                    'type' => PARAM_RAW
-                ),
-                'sectionimagealttext' => array(
+                    'type' => PARAM_RAW,
+                ],
+                'sectionimagealttext' => [
                     'default' => '',
-                    'type' => PARAM_TEXT
-                ),
-                'sectionbreak' => array(
+                    'type' => PARAM_TEXT,
+                ],
+                'sectionbreak' => [
                     'default' => 1, // No.
-                    'type' => PARAM_INT
-                ),
-                'sectionbreakheading' => array(
+                    'type' => PARAM_INT,
+                ],
+                'sectionbreakheading' => [
                     'default' => '',
-                    'type' => PARAM_RAW
-                )
-            );
+                    'type' => PARAM_RAW,
+                ],
+            ];
         }
 
         // Adding fields for course contents replacing summary
         for ($i = 1; $i <= content::MODULE_CONTENTS_NUM; $i++) {
             $fieldname = content::MODULE_CONTENT_FIELD_NAME_BASE . $i;
-            $sectionformatoptions[$fieldname] = array(
+            $sectionformatoptions[$fieldname] = [
                 'default' => '',
-                'type' => PARAM_TEXT
-            );
+                'type' => PARAM_TEXT,
+            ];
         }
         if ($foreditform && !isset($sectionformatoptions['sectionimage_filemanager']['label'])) {
-            $sectionformatoptionsedit = array(
-                'sectionimage_filemanager' => array(
+            $sectionformatoptionsedit = [
+                'sectionimage_filemanager' => [
                     'label' => new lang_string('sectionimage', 'format_mintcampus'),
                     'help' => 'sectionimage',
                     'help_component' => 'format_mintcampus',
                     'element_type' => 'sectionfilemanager',
-                    'element_attributes' => array(
-                        array(
+                    'element_attributes' => [
+                        [
                             'course' => $this->course,
-                            'sectionid' => optional_param('id', 0, PARAM_INT)
-                        )
-                    )
-                ),
-                'sectionimagealttext' => array(
+                            'sectionid' => optional_param('id', 0, PARAM_INT),
+                        ],
+                    ],
+                ],
+                'sectionimagealttext' => [
                     'label' => new lang_string('sectionimagealttext', 'format_mintcampus'),
                     'help' => 'sectionimagealttext',
                     'help_component' => 'format_mintcampus',
-                    'element_type' => 'text'
-                ),
-                'sectionbreak' => array(
+                    'element_type' => 'text',
+                ],
+                'sectionbreak' => [
                     'label' => new lang_string('sectionbreak', 'format_mintcampus'),
                     'help' => 'sectionbreak',
                     'help_component' => 'format_mintcampus',
                     'element_type' => 'select',
-                    'element_attributes' => array(
-                        array(
+                    'element_attributes' => [
+                        [
                             1 => new lang_string('no'),
-                            2 => new lang_string('yes')
-                        )
-                    ),
-                ),
-                'sectionbreakheading' => array(
+                            2 => new lang_string('yes'),
+                        ],
+                    ],
+                ],
+                'sectionbreakheading' => [
                     'label' => new lang_string('sectionbreakheading', 'format_mintcampus'),
                     'help' => 'sectionbreakheading',
                     'help_component' => 'format_mintcampus',
-                    'element_type' => 'textarea'
-                )
-            );
+                    'element_type' => 'textarea',
+                ],
+            ];
 
             // Adding fields for course contents replacing summary
             for ($i = 1; $i <= content::MODULE_CONTENTS_NUM; $i++) {
                 $fieldname = content::MODULE_CONTENT_FIELD_NAME_BASE . $i;
-                $sectionformatoptionsedit[$fieldname] = array(
+                $sectionformatoptionsedit[$fieldname] = [
                     'label' => new lang_string($fieldname, 'format_mintcampus'),
                     'element_type' => 'text',
-                );
+                ];
             }
 
             $sectionformatoptions = array_merge_recursive($sectionformatoptions, $sectionformatoptionsedit);
@@ -694,8 +700,11 @@ class format_mintcampus extends core_courseformat\base {
         }
         if (!is_object($section)) {
             global $DB;
-            $section = $DB->get_record('course_sections', array('course' => $this->get_courseid(), 'section' => $section),
-                'id,section,sequence,summary');
+            $section = $DB->get_record(
+                'course_sections',
+                ['course' => $this->get_courseid(), 'section' => $section],
+                'id,section,sequence,summary'
+            );
         }
         if (!$section || !$section->section) {
             // Not possible to delete 0-section.
@@ -734,8 +743,13 @@ class format_mintcampus extends core_courseformat\base {
      * @param null|lang_string|string $editlabel
      * @return \core\output\inplace_editable
      */
-    public function inplace_editable_render_section_name($section, $linkifneeded = true,
-            $editable = null, $edithint = null, $editlabel = null) {
+    public function inplace_editable_render_section_name(
+        $section,
+        $linkifneeded = true,
+        $editable = null,
+        $edithint = null,
+        $editlabel = null
+    ) {
         if (empty($edithint)) {
             $edithint = new lang_string('editsectionname', 'format_mintcampus');
         }
@@ -798,7 +812,7 @@ class format_mintcampus extends core_courseformat\base {
      * @param int $numsections The number of sections.
      */
     public function restore_numsections($numsections) {
-        $data = array('numsections' => $numsections);
+        $data = ['numsections' => $numsections];
         $this->update_course_format_options($data);
     }
 
@@ -827,12 +841,12 @@ class format_mintcampus extends core_courseformat\base {
      */
     public function get_mintcampuscoursevideo_filemanager() {
         global $DB;
-        $itemid = $DB->get_field('course_format_options', 'value', array(
+        $itemid = $DB->get_field('course_format_options', 'value', [
             'courseid' => $this->courseid,
             'format' => 'mintcampusformat',
             'sectionid' => 0,
-            'name' => 'mintcampuscoursevideo_filemanager'
-        ));
+            'name' => 'mintcampuscoursevideo_filemanager',
+        ]);
         if (!$itemid) {
             $itemid = file_get_unused_draft_itemid();
         }
@@ -845,19 +859,19 @@ class format_mintcampus extends core_courseformat\base {
      */
     public function set_mintcampuscoursevideo_filemanager($itemid = false) {
         global $DB;
-        $courseimage = $DB->get_record('course_format_options', array(
+        $courseimage = $DB->get_record('course_format_options', [
             'courseid' => $this->courseid,
             'format' => 'mintcampusformat',
             'sectionid' => 0,
-            'name' => 'mintcampuscoursevideo_filemanager'
-        ));
+            'name' => 'mintcampuscoursevideo_filemanager',
+        ]);
         if ($courseimage == false) {
-            $courseimage = (object) array(
+            $courseimage = (object) [
                 'courseid' => $this->courseid,
                 'format' => 'mintcampusformat',
                 'sectionid' => 0,
-                'name' => 'mintcampuscoursevideo_filemanager'
-            );
+                'name' => 'mintcampuscoursevideo_filemanager',
+            ];
             $courseimage->id = $DB->insert_record('course_format_options', $courseimage);
         }
         $courseimage->value = $itemid;
@@ -871,12 +885,12 @@ class format_mintcampus extends core_courseformat\base {
      */
     public function get_mintcampuscourseimage_filemanager() {
         global $DB;
-        $itemid = $DB->get_field('course_format_options', 'value', array(
+        $itemid = $DB->get_field('course_format_options', 'value', [
             'courseid' => $this->courseid,
             'format' => 'mintcampusformat',
             'sectionid' => 0,
-            'name' => 'mintcampuscourseimage_filemanager'
-        ));
+            'name' => 'mintcampuscourseimage_filemanager',
+        ]);
         if (!$itemid) {
             $itemid = file_get_unused_draft_itemid();
         }
@@ -889,19 +903,19 @@ class format_mintcampus extends core_courseformat\base {
      */
     public function set_mintcampuscourseimage_filemanager($itemid = false) {
         global $DB;
-        $courseimage = $DB->get_record('course_format_options', array(
+        $courseimage = $DB->get_record('course_format_options', [
             'courseid' => $this->courseid,
             'format' => 'mintcampusformat',
             'sectionid' => 0,
-            'name' => 'mintcampuscourseimage_filemanager'
-        ));
+            'name' => 'mintcampuscourseimage_filemanager',
+        ]);
         if ($courseimage == false) {
-            $courseimage = (object) array(
+            $courseimage = (object) [
                 'courseid' => $this->courseid,
                 'format' => 'mintcampusformat',
                 'sectionid' => 0,
-                'name' => 'mintcampuscourseimage_filemanager'
-            );
+                'name' => 'mintcampuscourseimage_filemanager',
+            ];
             $courseimage->id = $DB->insert_record('course_format_options', $courseimage);
         }
         $courseimage->value = $itemid;
@@ -917,7 +931,7 @@ class format_mintcampus extends core_courseformat\base {
      * @return null|renderable null for no output or object with data for plugin renderer
      */
     public function course_content_header() {
-        //TODO navigation, section completion, course completion, rating
+        // TODO navigation, section completion, course completion, rating
         return new format_mintcampus_header();
     }
 
@@ -929,7 +943,7 @@ class format_mintcampus extends core_courseformat\base {
      * @return null|renderable null for no output or object with data for plugin renderer
      */
     public function course_content_footer() {
-        //TODO navigation
+        // TODO navigation
         return new format_mintcampus_footer();
     }
 }
@@ -941,7 +955,8 @@ class format_mintcampus extends core_courseformat\base {
  * @copyright  2012 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_mintcampus_header implements renderable {}
+class format_mintcampus_header implements renderable {
+}
 
 /**
  * Class storing information to be displayed in course header/footer
@@ -950,7 +965,8 @@ class format_mintcampus_header implements renderable {}
  * @copyright  2012 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_mintcampus_footer implements renderable {}
+class format_mintcampus_footer implements renderable {
+}
 
 // Transposed from block_html_pluginfile.
 /**
@@ -968,7 +984,7 @@ class format_mintcampus_footer implements renderable {}
  * @param array $options additional options affecting the file serving
  * @return bool
  */
-function format_mintcampus_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function format_mintcampus_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload, array $options = []) {
     if ($context->contextlevel != CONTEXT_COURSE) {
         send_file_not_found();
     }
@@ -976,8 +992,7 @@ function format_mintcampus_pluginfile($course, $birecordorcm, $context, $fileare
     // Check if user has capability to access course.
     require_course_login($course);
 
-    if ($filearea == 'displayedsectionimage'){
-
+    if ($filearea == 'displayedsectionimage') {
         $fs = get_file_storage();
 
         $filename = $args[2];
@@ -994,8 +1009,7 @@ function format_mintcampus_pluginfile($course, $birecordorcm, $context, $fileare
         // displayedsectionimage in the URL as a means to overcome this.
         \core\session\manager::write_close();
         send_stored_file($file, null, 0, $forcedownload, $options);
-    }elseif($filearea == 'mintcampuscourseimage_filearea' || $filearea = 'mintcampuscoursevideo_filearea'){
-
+    } else if ($filearea == 'mintcampuscourseimage_filearea' || $filearea = 'mintcampuscoursevideo_filearea') {
         $itemid = (int)array_shift($args);
         $fs = get_file_storage();
         $filename = array_pop($args);
@@ -1003,17 +1017,16 @@ function format_mintcampus_pluginfile($course, $birecordorcm, $context, $fileare
         if (empty($args)) {
             $filepath = '/';
         } else {
-            $filepath = '/'.implode('/', $args).'/';
+            $filepath = '/' . implode('/', $args) . '/';
         }
         $file = $fs->get_file($context->id, 'format_mintcampus', $filearea, $itemid, $filepath, $filename);
         if (!$file) {
             return false;
         }
         send_stored_file($file, 0, 0, 0, $options);
-    }else{
+    } else {
         send_file_not_found();
     }
-
 }
 
 /**
@@ -1030,7 +1043,9 @@ function format_mintcampus_inplace_editable($itemtype, $itemid, $newvalue) {
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
-            [$itemid, 'mintcampus'], MUST_EXIST);
+            [$itemid, 'mintcampus'],
+            MUST_EXIST
+        );
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
@@ -1049,8 +1064,15 @@ function format_mintcampus_get_video($context) {
     $files = $fs->get_area_files($context->id, 'format_mintcampus', 'mintcampuscoursevideo_filearea', $fileitemid);
     if ($files) {
         foreach ($files as $file) {
-            $url = moodle_url::make_pluginfile_url($context->id, 'format_mintcampus', 'mintcampuscoursevideo_filearea', $fileitemid, $file->get_filepath(),
-                $file->get_filename(), false);
+            $url = moodle_url::make_pluginfile_url(
+                $context->id,
+                'format_mintcampus',
+                'mintcampuscoursevideo_filearea',
+                $fileitemid,
+                $file->get_filepath(),
+                $file->get_filename(),
+                false
+            );
         }
         return $url;
     } else {
@@ -1064,12 +1086,12 @@ function format_mintcampus_get_video($context) {
  */
 function format_mintcampus_coursevideo_filemanager($courseid) {
     global $DB;
-    $itemid = $DB->get_field('course_format_options', 'value', array(
+    $itemid = $DB->get_field('course_format_options', 'value', [
         'courseid' => $courseid,
         'format' => 'mintcampusformat',
         'sectionid' => 0,
-        'name' => 'mintcampuscoursevideo_filemanager'
-    ));
+        'name' => 'mintcampuscoursevideo_filemanager',
+    ]);
     if (!$itemid) {
         $itemid = file_get_unused_draft_itemid();
     }
@@ -1091,8 +1113,15 @@ function format_mintcampus_get_image($context) {
     $files = $fs->get_area_files($context->id, 'format_mintcampus', 'mintcampuscourseimage_filearea', $fileitemid);
     if ($files) {
         foreach ($files as $file) {
-            $url = moodle_url::make_pluginfile_url($context->id, 'format_mintcampus', 'mintcampuscourseimage_filearea', $fileitemid, $file->get_filepath(),
-            $file->get_filename(), false);
+            $url = moodle_url::make_pluginfile_url(
+                $context->id,
+                'format_mintcampus',
+                'mintcampuscourseimage_filearea',
+                $fileitemid,
+                $file->get_filepath(),
+                $file->get_filename(),
+                false
+            );
         }
         return $url;
     } else {
@@ -1106,12 +1135,12 @@ function format_mintcampus_get_image($context) {
  */
 function format_mintcampus_courseimage_filemanager($courseid) {
     global $DB;
-    $itemid = $DB->get_field('course_format_options', 'value', array(
+    $itemid = $DB->get_field('course_format_options', 'value', [
         'courseid' => $courseid,
         'format' => 'mintcampusformat',
         'sectionid' => 0,
-        'name' => 'mintcampuscourseimage_filemanager'
-    ));
+        'name' => 'mintcampuscourseimage_filemanager',
+    ]);
     if (!$itemid) {
         $itemid = file_get_unused_draft_itemid();
     }

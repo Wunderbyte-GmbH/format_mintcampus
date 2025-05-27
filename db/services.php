@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Chat external functions and service definitions.
  *
@@ -22,17 +22,17 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-$functions = array(
-    'format_mintcampus_get_activity_navigation' => array(
+$functions = [
+    'format_mintcampus_get_activity_navigation' => [
         'classname' => 'format_mintcampus_external',
         'methodname' => 'get_activity_navigation',
         'classpath' => 'course/format/mintcampus/external.php',
         'description' => 'Fetches a data for activity navigation',
         'type' => 'write',
         'ajax' => true,
-        'capabilities'  => ''
-    ),
-    'format_mintcampus_save_rating' => array(
+        'capabilities'  => '',
+    ],
+    'format_mintcampus_save_rating' => [
         'classname' => 'format_mintcampus_external',
         'methodname' => 'add_rating',
         'classpath' => 'course/format/mintcampus/external.php',
@@ -40,9 +40,9 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
         'capabilities'  => '',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
-    ),
-    'format_mintcampus_save_comment' => array(
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'format_mintcampus_save_comment' => [
         'classname' => 'format_mintcampus_external',
         'methodname' => 'add_comment',
         'classpath' => 'course/format/mintcampus/external.php',
@@ -50,9 +50,9 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
         'capabilities'  => '',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
-    ),
-    'format_mintcampus_get_rating' => array(
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'format_mintcampus_get_rating' => [
         'classname' => 'format_mintcampus_external',
         'methodname' => 'get_rating',
         'classpath' => 'course/format/mintcampus/external.php',
@@ -60,9 +60,9 @@ $functions = array(
         'type'          => 'read',
         'ajax'          => true,
         'capabilities'  => '',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
-    ),
-    'format_mintcampus_get_activity_setting' => array(
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'format_mintcampus_get_activity_setting' => [
         'classname' => 'format_mintcampus_external',
         'methodname' => 'get_activity_setting',
         'classpath' => 'course/format/mintcampus/external.php',
@@ -70,9 +70,9 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
         'capabilities'  => '',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
-    ),
-    'format_mintcampus_set_activity_setting' => array(
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'format_mintcampus_set_activity_setting' => [
         'classname' => 'format_mintcampus_external',
         'methodname' => 'set_activity_setting',
         'classpath' => 'course/format/mintcampus/external.php',
@@ -80,8 +80,8 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
         'capabilities'  => '',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
-    ),
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
     'format_mintcampus_delete_rating' => [
         'classname'   => 'format_mintcampus_external',
         'methodname'  => 'delete_rating',
@@ -89,7 +89,7 @@ $functions = array(
         'description' => 'Delete a rating by ID',
         'type'        => 'write',
         'ajax'        => true,
-        'capabilities'=> '',
+        'capabilities' => '',
     ],
     'format_mintcampus_delete_comment' => [
         'classname'   => 'format_mintcampus_external',
@@ -98,7 +98,6 @@ $functions = array(
         'description' => 'Delete a comment by ID',
         'type'        => 'write',
         'ajax'        => true,
-        'capabilities'=> '',
+        'capabilities' => '',
     ],
-    );
-
+    ];

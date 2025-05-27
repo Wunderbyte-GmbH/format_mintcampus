@@ -36,7 +36,6 @@ use moodle_page;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends section_renderer {
-
     /**
      * Constructor method, calls the parent constructor.
      *
@@ -75,10 +74,10 @@ class renderer extends section_renderer {
     }
 
     protected function render_format_mintcampus_header(\format_mintcampus_header $testheader) {
-        return \html_writer::tag('div', '',['id'=>'mintcampusactivityheader']);
+        return \html_writer::tag('div', '', ['id' => 'mintcampusactivityheader']);
     }
 
     protected function render_format_mintcampus_footer(\format_mintcampus_footer $testheader) {
-        return \html_writer::tag('div', '',['id'=>'mintcampusactivityfooter']);
+        return \html_writer::tag('div', '', ['id' => 'mintcampusactivityfooter']);
     }
 }

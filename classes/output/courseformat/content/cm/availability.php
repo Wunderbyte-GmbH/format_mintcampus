@@ -16,7 +16,7 @@
 
 /**
  * Contains the default activity availability information.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
@@ -35,14 +35,13 @@ use core_availability\info;
 
 /**
  * Base class to render a course module availability inside a course format.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class availability extends \core_courseformat\output\local\content\cm\availability {
-
     /** @var course_format the course format */
     protected $format;
 
@@ -94,11 +93,7 @@ class availability extends \core_courseformat\output\local\content\cm\availabili
         }
 
         $info = [];
-        $formattedinfo = \core_availability\info::format_info(
-            $this->mod->availableinfo,
-            $this->mod->get_course()
-        );
-        $info[] = $this->availability_info($formattedinfo, 'isrestricted');
+        $info[] = $this->get_availability_data($output, $this->mod->availableinfo, 'isrestricted');
         return $info;
     }
 
@@ -137,11 +132,7 @@ class availability extends \core_courseformat\output\local\content\cm\availabili
         if (!$mod->visible) {
             $hidinfoclass .= ' hide';
         }
-        $formattedinfo = info::format_info(
-            $fullinfo,
-            $mod->get_course()
-        );
-        $info[] = $this->availability_info($formattedinfo, $hidinfoclass);
+        $info[] = $this->get_availability_data($output, $fullinfo, $hidinfoclass);
 
         return $info;
     }

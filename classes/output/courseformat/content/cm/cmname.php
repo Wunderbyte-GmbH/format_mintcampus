@@ -16,7 +16,7 @@
 
 /**
  * Contains the default activity name inplace editable.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
@@ -39,7 +39,7 @@ use stdClass;
 
 /**
  * Base class to render a course module inplace editable header.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
@@ -59,9 +59,9 @@ class cmname extends \core_courseformat\output\local\content\cm\cmname {
      * @param array $displayoptions optional extra display options
      */
     public function __construct(course_format $format, section_info $section, cm_info $mod, ?bool $editable = null, array $displayoptions = []) {
-        parent::__construct($format,$section,$mod,$editable,$displayoptions);
-        $this->section=$section;
-        $this->editable=$editable;
+        parent::__construct($format, $section, $mod, $editable, $displayoptions);
+        $this->section = $section;
+        $this->editable = $editable;
     }
 
     /**
@@ -71,7 +71,7 @@ class cmname extends \core_courseformat\output\local\content\cm\cmname {
      * @return stdClass data context for a mustache template
      */
     public function export_for_template(\renderer_base $output): array {
-        global $CFG,$DB;
+        global $CFG, $DB;
         $mod = $this->mod;
         $displayoptions = $this->displayoptions;
 
@@ -80,14 +80,14 @@ class cmname extends \core_courseformat\output\local\content\cm\cmname {
             return [];
         }
 
-        if (file_exists($CFG->dirroot."/course/format/mintcampus/pix/modicons/".$mod->modname.".svg")) {
-            $icon = $output->image_url("modicons/".$mod->modname, 'format_mintcampus');
-        }else{
-            if($mod->modname=='accordion'){
-                $accordiontype= $DB->get_field('accordion','type' ,array('id'=>$mod->instance));
-                $mod->set_icon_url($output->image_url('monologo'.$accordiontype, 'mod_accordion'));
+        if (file_exists($CFG->dirroot . "/course/format/mintcampus/pix/modicons/" . $mod->modname . ".svg")) {
+            $icon = $output->image_url("modicons/" . $mod->modname, 'format_mintcampus');
+        } else {
+            if ($mod->modname == 'accordion') {
+                $accordiontype = $DB->get_field('accordion', 'type', ['id' => $mod->instance]);
+                $mod->set_icon_url($output->image_url('monologo' . $accordiontype, 'mod_accordion'));
                 $icon = $mod->get_icon_url();
-            }else{
+            } else {
                 $icon = $mod->get_icon_url();
             }
         }

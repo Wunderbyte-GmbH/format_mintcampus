@@ -26,13 +26,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Plugin version.
-$plugin->version = 2023121904;
+$plugin->version = 2023121905;
 
 // Required Moodle version.
 $plugin->requires = 2022112800.00; // 4.1 (Build: 20221128).
 
 // Supported Moodle version.
-$plugin->supported = array(401, 401);
+$plugin->supported = [401, 405];
 
 // Full name of the plugin.
 $plugin->component = 'format_mintcampus';

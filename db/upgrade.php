@@ -70,7 +70,7 @@ function xmldb_format_mintcampus_upgrade($oldversion = 0) {
                     // Upgrade from old images.
                     $oldimages = $DB->get_records('format_mintcampus_icon');
                     if (!empty($oldimages)) {
-                        $newimages = array();
+                        $newimages = [];
                         foreach ($oldimages as $oldimage) {
                             if (!empty($oldimage->image)) {
                                 try {
@@ -88,7 +88,7 @@ function xmldb_format_mintcampus_upgrade($oldversion = 0) {
                                 // Contenthash later!
                                 $DB->insert_record('format_mintcampus_image', $newimagecontainer, true);
                                 if (!array_key_exists($newimagecontainer->courseid, $newimages)) {
-                                    $newimages[$newimagecontainer->courseid] = array();
+                                    $newimages[$newimagecontainer->courseid] = [];
                                 }
                                 $newimages[$newimagecontainer->courseid][$newimagecontainer->sectionid] = $newimagecontainer;
                             }
@@ -124,14 +124,19 @@ function xmldb_format_mintcampus_upgrade($oldversion = 0) {
                                                         $filerecord->filearea,
                                                         $filerecord->itemid,
                                                         $filerecord->filepath,
-                                                        $filerecord->filename);
+                                                        $filerecord->filename
+                                                    );
                                                 }
                                                 if ($thefile === false) {
                                                     $thefile = $fs->create_file_from_storedfile($filerecord, $file);
                                                 }
                                                 if ($thefile !== false) {
-                                                    $DB->set_field('format_mintcampus_image', 'contenthash',
-                                                        $thefile->get_contenthash(), array('sectionid' => $filesectionid));
+                                                    $DB->set_field(
+                                                        'format_mintcampus_image',
+                                                        'contenthash',
+                                                        $thefile->get_contenthash(),
+                                                        ['sectionid' => $filesectionid]
+                                                    );
                                                     // Don't delete the section file in case used in the summary.
                                                 }
                                             }

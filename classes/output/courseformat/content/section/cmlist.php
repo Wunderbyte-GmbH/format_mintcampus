@@ -16,7 +16,7 @@
 
 /**
  * Contains the default activity list from a section.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
@@ -36,14 +36,13 @@ use stdClass;
 
 /**
  * Base class to render a section activity list.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class cmlist extends \core_courseformat\output\local\content\section\cmlist {
-
     use courseformat_named_templatable;
 
     /** @var course_format the course format class */
@@ -69,7 +68,7 @@ class cmlist extends \core_courseformat\output\local\content\section\cmlist {
      * @param array $displayoptions optional extra display options
      */
     public function __construct(course_format $format, section_info $section, array $displayoptions = []) {
-        parent::__construct($format,  $section,  $displayoptions);
+        parent::__construct($format, $section, $displayoptions);
     }
 
     /**
@@ -79,7 +78,7 @@ class cmlist extends \core_courseformat\output\local\content\section\cmlist {
      * @return array data context for a mustache template
      */
     public function export_for_template(\renderer_base $output): stdClass {
-        global $USER,$PAGE;
+        global $USER, $PAGE;
 
         $format = $this->format;
         $section = $this->section;
@@ -122,7 +121,7 @@ class cmlist extends \core_courseformat\output\local\content\section\cmlist {
             }
             if ($mod->is_visible_on_course_page()) {
                 $item = new $this->itemclass($format, $section, $mod, $this->displayoptions);
-                $itemoutput = $item->export_for_template($output);//activity
+                $itemoutput = $item->export_for_template($output);// activity
 
                 if (!$editing) { // editacia nie je zapnuta
                     if ($itemoutput->module == 'accordion') {
@@ -155,24 +154,22 @@ class cmlist extends \core_courseformat\output\local\content\section\cmlist {
                             $containertext = '';
                         }
                     } else {
-                        if($iscontainer == 1){
+                        if ($iscontainer == 1) {
                             $container[] = (object)[
                                 'cmitem' => $itemoutput,
-                                'moveurl' => new moodle_url('/course/mod.php', array('moveto' => $modnumber, 'sesskey' => sesskey())),
+                                'moveurl' => new moodle_url('/course/mod.php', ['moveto' => $modnumber, 'sesskey' => sesskey()]),
                             ];
-                        }else{
+                        } else {
                             $data->cms[] = (object)[
                                 'cmitem' => $itemoutput,
-                                'moveurl' => new moodle_url('/course/mod.php', array('moveto' => $modnumber, 'sesskey' => sesskey())),
+                                'moveurl' => new moodle_url('/course/mod.php', ['moveto' => $modnumber, 'sesskey' => sesskey()]),
                             ];
                         }
-
                     }
-
                 } else {
                     $data->cms[] = (object)[
                         'cmitem' => $itemoutput,
-                        'moveurl' => new moodle_url('/course/mod.php', array('moveto' => $modnumber, 'sesskey' => sesskey())),
+                        'moveurl' => new moodle_url('/course/mod.php', ['moveto' => $modnumber, 'sesskey' => sesskey()]),
                     ];
                 }
             }

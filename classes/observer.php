@@ -29,7 +29,6 @@
  * Event observers supported by this format.
  */
 class format_mintcampus_observer {
-
     /**
      * Observer for the event course_content_deleted.
      *
@@ -53,7 +52,7 @@ class format_mintcampus_observer {
      */
     public static function course_restored(\core\event\course_restored $event) {
         global $DB;
-        $format = $DB->get_field('course', 'format', array('id' => $event->objectid));
+        $format = $DB->get_field('course', 'format', ['id' => $event->objectid]);
         // If not in the mintcampus format, then don't need the images etc.
         if ($format != 'mintcampus') {
             // Then delete the images.

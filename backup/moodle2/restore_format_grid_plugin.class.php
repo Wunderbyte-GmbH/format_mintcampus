@@ -31,7 +31,6 @@ require_once($CFG->dirroot . '/course/format/mintcampus/lib.php');
  * needed to restore one mintcampus format course.
  */
 class restore_format_mintcampus_plugin extends restore_format_plugin {
-
     /** @var int */
     protected $originalnumsections = 0;
 
@@ -46,11 +45,12 @@ class restore_format_mintcampus_plugin extends restore_format_plugin {
             global $DB;
             $maxsection = $DB->get_field_sql(
                 'SELECT max(section) FROM {course_sections} WHERE course = ?',
-                [$this->step->get_task()->get_courseid()]);
+                [$this->step->get_task()->get_courseid()]
+            );
             $this->originalnumsections = (int)$maxsection;
         }
 
-        $paths = array();
+        $paths = [];
 
         // Add own format stuff.
         $elename = 'mintcampus'; // This defines the postfix of 'process_*' below.
@@ -76,16 +76,20 @@ class restore_format_mintcampus_plugin extends restore_format_plugin {
         $courseid = $this->task->get_courseid();
         /* We only process this information if the course we are restoring to
            has 'mintcampus' format (target format can change depending of restore options). */
-        $format = $DB->get_field('course', 'format', array('id' => $courseid));
+        $format = $DB->get_field('course', 'format', ['id' => $courseid]);
         if ($format !== 'mintcampus') {
             return;
         }
 
         $data->courseid = $courseid;
 
-        if (!($course = $DB->get_record('course', array('id' => $data->courseid)))) {
-            throw new \moodle_exception('invalidcourseid', 'format_mintcampus', '',
-                get_string('invalidcourseid', 'error'));
+        if (!($course = $DB->get_record('course', ['id' => $data->courseid]))) {
+            throw new \moodle_exception(
+                'invalidcourseid',
+                'format_mintcampus',
+                '',
+                get_string('invalidcourseid', 'error')
+            );
         } // From /course/view.php.
         // No need to annotate anything here.
     }
@@ -106,7 +110,7 @@ class restore_format_mintcampus_plugin extends restore_format_plugin {
 
         /* We only process this information if the course we are restoring to
            has 'mintcampus' format (target format can change depending of restore options). */
-        $format = $DB->get_field('course', 'format', array('id' => $courseid));
+        $format = $DB->get_field('course', 'format', ['id' => $courseid]);
         if ($format !== 'mintcampus') {
             return;
         }
@@ -122,7 +126,7 @@ class restore_format_mintcampus_plugin extends restore_format_plugin {
                 if (!$file->is_directory()) {
                     $filename = $file->get_filename();
                     $filesectionid = $file->get_itemid();
-                    $mintcampusimage = $DB->get_record('format_mintcampus_image', array('sectionid' => $filesectionid), 'image');
+                    $mintcampusimage = $DB->get_record('format_mintcampus_image', ['sectionid' => $filesectionid], 'image');
                     if (($mintcampusimage) && ($mintcampusimage->image == $filename)) { // Ensure the correct file.
                         $filerecord = new stdClass();
                         $filerecord->contextid = $coursecontext->id;
@@ -132,8 +136,12 @@ class restore_format_mintcampus_plugin extends restore_format_plugin {
                         $filerecord->filename = $filename;
                         $newfile = $fs->create_file_from_storedfile($filerecord, $file);
                         if ($newfile) {
-                            $DB->set_field('format_mintcampus_image', 'contenthash', $newfile->get_contenthash(),
-                                array('sectionid' => $filesectionid));
+                            $DB->set_field(
+                                'format_mintcampus_image',
+                                'contenthash',
+                                $newfile->get_contenthash(),
+                                ['sectionid' => $filesectionid]
+                            );
                         }
                     }
                 }
@@ -163,8 +171,10 @@ class restore_format_mintcampus_plugin extends restore_format_plugin {
             if ($this->step->get_task()->get_setting_value($key . '_included')) {
                 $sectionnum = (int)$section->title;
                 if ($sectionnum > $settings['numsections'] && $sectionnum > $this->originalnumsections) {
-                    $DB->execute("UPDATE {course_sections} SET visible = 0 WHERE course = ? AND section = ?",
-                        [$this->step->get_task()->get_courseid(), $sectionnum]);
+                    $DB->execute(
+                        "UPDATE {course_sections} SET visible = 0 WHERE course = ? AND section = ?",
+                        [$this->step->get_task()->get_courseid(), $sectionnum]
+                    );
                 }
             }
         }
@@ -175,7 +185,7 @@ class restore_format_mintcampus_plugin extends restore_format_plugin {
      */
     protected function define_section_plugin_structure() {
 
-        $paths = array();
+        $paths = [];
 
         // Add own format stuff.
         $elepath = $this->get_pathfor('/');  // Note: $this->get_recommended_name() gets! -> section/the name.

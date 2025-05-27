@@ -33,12 +33,17 @@ $settings = null;
 $ADMIN->add('formatsettings', new admin_category('format_mintcampus', get_string('pluginname', 'format_mintcampus')));
 
 // Information.
-$page = new admin_settingpage('format_mintcampus_information',
-    get_string('information', 'format_mintcampus'));
+$page = new admin_settingpage(
+    'format_mintcampus_information',
+    get_string('information', 'format_mintcampus')
+);
 
 if ($ADMIN->fulltree) {
-    $page->add(new admin_setting_heading('format_mintcampus_information', '',
-        format_text(get_string('informationsettingsdesc', 'format_mintcampus'), FORMAT_MARKDOWN)));
+    $page->add(new admin_setting_heading(
+        'format_mintcampus_information',
+        '',
+        format_text(get_string('informationsettingsdesc', 'format_mintcampus'), FORMAT_MARKDOWN)
+    ));
 
     // Information.
     $page->add(new admin_setting_information('format_mintcampus/formatinformation', '', '', 401));
@@ -47,7 +52,11 @@ if ($ADMIN->fulltree) {
     $page->add(new admin_setting_markdown('format_mintcampus/formatsupport', '', '', 'Support.md'));
 
     // Changes.md.
-    $page->add(new admin_setting_markdown('format_mintcampus/formatchanges',
-        get_string('informationchanges', 'format_mintcampus'), '', 'Changes.md'));
+    $page->add(new admin_setting_markdown(
+        'format_mintcampus/formatchanges',
+        get_string('informationchanges', 'format_mintcampus'),
+        '',
+        'Changes.md'
+    ));
 }
 $ADMIN->add('format_mintcampus', $page);

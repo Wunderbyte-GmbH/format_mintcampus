@@ -23,11 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['addsection'] = 'Modul hinzufügen';
+$string['module'] = 'Modul';
 $string['topic'] = 'Section';
 $string['topic0'] = 'General';
-$string['module'] = 'Modul';
 
-$string['addsection'] = 'Modul hinzufügen';
 $string['hidefromothers'] = 'Modul verbergen'; // No longer used kept for legacy versions.
 $string['showfromothers'] = 'Modul anzeigen'; // No longer used kept for legacy versions.
 $string['currentsection'] = 'Dieses Modul'; // No longer used kept for legacy versions.

@@ -28,14 +28,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 // List of observers.
-$observers = array(
+$observers = [
 
-    array(
+    [
         'eventname' => '\core\event\course_content_deleted',
         'callback' => 'format_mintcampus_observer::course_content_deleted',
-    ),
-    array(
+    ],
+    [
         'eventname' => '\core\event\course_restored',
         'callback' => 'format_mintcampus_observer::course_restored',
-    )
-);
+    ],
+];

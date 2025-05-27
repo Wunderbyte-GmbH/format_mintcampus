@@ -27,7 +27,6 @@
  * Provides the information to back up mintcampus course format
  */
 class backup_format_mintcampus_plugin extends backup_format_plugin {
-
     /**
      * Returns the format information to attach to course element
      */
@@ -51,13 +50,13 @@ class backup_format_mintcampus_plugin extends backup_format_plugin {
         // Create one standard named plugin element (the visible container).
         // The sectionid and courseid not required as populated on restore.
         $recomendedname = $this->get_recommended_name();
-        $section = new backup_nested_element($recomendedname, array('sectionid'), array('image', 'contenthash'));
+        $section = new backup_nested_element($recomendedname, ['sectionid'], ['image', 'contenthash']);
 
         // Connect the visible container ASAP.
         $plugin->add_child($section);
 
         // Set source to populate the data.
-        $section->set_source_table('format_mintcampus_image', array('sectionid' => backup::VAR_SECTIONID));
+        $section->set_source_table('format_mintcampus_image', ['sectionid' => backup::VAR_SECTIONID]);
         $section->annotate_files('format_mintcampus', 'sectionimage', 'sectionid');
 
         return $plugin;

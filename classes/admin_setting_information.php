@@ -31,7 +31,6 @@ namespace format_mintcampus;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class admin_setting_information extends \admin_setting {
-
     /** @var int The branch this is for. */
     protected $mbranch;
 
@@ -85,7 +84,7 @@ class admin_setting_information extends \admin_setting {
      * @param string $query
      * @return string Returns an HTML string
      */
-    public function output_html($data, $query='') {
+    public function output_html($data, $query = '') {
         global $CFG, $OUTPUT;
 
         $formats = \core_plugin_manager::instance()->get_present_plugins('format');
@@ -97,19 +96,21 @@ class admin_setting_information extends \admin_setting {
         }
 
         $classes[] = 'fa fa-heart';
-        $attributes = array();
+        $attributes = [];
         $attributes['aria-hidden'] = 'true';
         $attributes['class'] = 'fa fa-heart';
         $attributes['title'] = get_string('love', 'format_mintcampus');
-        $content = \html_writer::tag('span', $attributes['title'], array('class' => 'sr-only'));
+        $content = \html_writer::tag('span', $attributes['title'], ['class' => 'sr-only']);
         $content = \html_writer::tag('span', $content, $attributes);
-        $context['versioninfo'] = get_string('versioninfo', 'format_mintcampus',
-            array(
+        $context['versioninfo'] = get_string(
+            'versioninfo',
+            'format_mintcampus',
+            [
                 'moodle' => $CFG->release,
                 'release' => $plugininfo->release,
                 'version' => $plugininfo->version,
-                'love' => $content
-            )
+                'love' => $content,
+            ]
         );
 
         if (!empty($plugininfo->maturity)) {
@@ -117,25 +118,25 @@ class admin_setting_information extends \admin_setting {
                 case MATURITY_ALPHA:
                     $context['maturity'] = get_string('versionalpha', 'format_mintcampus');
                     $context['maturityalert'] = 'danger';
-                break;
+                    break;
                 case MATURITY_BETA:
                     $context['maturity'] = get_string('versionbeta', 'format_mintcampus');
                     $context['maturityalert'] = 'danger';
-                break;
+                    break;
                 case MATURITY_RC:
                     $context['maturity'] = get_string('versionrc', 'format_mintcampus');
                     $context['maturityalert'] = 'warning';
-                break;
+                    break;
                 case MATURITY_STABLE:
                     $context['maturity'] = get_string('versionstable', 'format_mintcampus');
                     $context['maturityalert'] = 'info';
-                break;
+                    break;
             }
         }
 
         if ($CFG->branch != $this->mbranch) {
-            $context['versioncheck'] = 'Release '.$plugininfo->release.', version '.$plugininfo->version;
-            $context['versioncheck'] .= ' is incompatible with Moodle '.$CFG->release;
+            $context['versioncheck'] = 'Release ' . $plugininfo->release . ', version ' . $plugininfo->version;
+            $context['versioncheck'] .= ' is incompatible with Moodle ' . $CFG->release;
         }
 
         return $OUTPUT->render_from_template('format_mintcampus/mintcampus_admin_setting_information', $context);

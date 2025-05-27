@@ -46,7 +46,7 @@ class format_mintcampus_external extends external_api {
      */
     public static function get_activity_navigation_parameters() {
         return new external_function_parameters([
-            'cmid' => new external_value(PARAM_INT, 'The cmid of module view', VALUE_OPTIONAL)
+            'cmid' => new external_value(PARAM_INT, 'The cmid of module view', VALUE_OPTIONAL),
         ]);
     }
 
@@ -62,16 +62,16 @@ class format_mintcampus_external extends external_api {
      * @throws restricted_context_exception
      */
     public static function get_activity_navigation($cmid) {
-        global $PAGE,$OUTPUT,$DB;
+        global $PAGE, $OUTPUT, $DB;
         $params = external_api::validate_parameters(self::get_activity_navigation_parameters(), [
-            'cmid' => $cmid
+            'cmid' => $cmid,
         ]);
         $cmid = $params['cmid'];
 
-        if($cmid==0){
+        if ($cmid == 0) {
             return  [
                 'activityheader' => '',
-                'activityfooter' => ''
+                'activityfooter' => '',
             ];
         }
 
@@ -81,11 +81,12 @@ class format_mintcampus_external extends external_api {
 
         $PAGE->set_context(\context_system::instance());
 
-        //$courseformat = course_get_format($course);
+        // $courseformat = course_get_format($course);
 
-        $coursemodule = $DB->get_record('course_modules',['id'=>$cmid]);
+        $coursemodule = $DB->get_record('course_modules', ['id' => $cmid]);
         $courseid = $coursemodule->course;
-        $sectionnum = $DB->get_field('course_sections','section',['id'=>$coursemodule->section,'course'=>$courseid]);;
+        $sectionnum = $DB->get_field('course_sections', 'section', ['id' => $coursemodule->section, 'course' => $courseid]);
+        ;
 
         $course = get_course($courseid);
         // Get a list of all the activities in the course.
@@ -96,7 +97,7 @@ class format_mintcampus_external extends external_api {
         $activitylist = [];
         foreach ($modules as $module) {
             // Only add activities the user can access, aren't in stealth mode and have a url (eg. mod_label does not).
-            if (!$module->uservisible || $module->is_stealth() || empty($module->url) || $module->get_section_info()->section==0) {
+            if (!$module->uservisible || $module->is_stealth() || empty($module->url) || $module->get_section_info()->section == 0) {
                 continue;
             }
             $mods[$module->id] = $module;
@@ -112,7 +113,7 @@ class format_mintcampus_external extends external_api {
                 $modname .= ' ' . get_string('hiddenwithbrackets');
             }
             // Module URL.
-            $linkurl = new moodle_url($module->url, array('forceview' => 1));
+            $linkurl = new moodle_url($module->url, ['forceview' => 1]);
             // Add module URL (as key) and name (as value) to the activity list array.
             $activitylist[$linkurl->out(false)] = $modname;
         }
@@ -123,7 +124,6 @@ class format_mintcampus_external extends external_api {
 
         // If there is only one mod then do nothing.
         if (!$nummods == 0) {
-
             // Get an array of just the course module ids used to get the cmid value based on their position in the course.
             $modids = array_keys($mods);
 
@@ -148,7 +148,7 @@ class format_mintcampus_external extends external_api {
             $renderer = $PAGE->get_renderer('core', 'course');
             $activitynavigation = $renderer->render($activitynav);
         }
-        //completionstates
+        // completionstates
 
         $modinfo = get_fast_modinfo($course);
         $sections = $modinfo->get_section_info_all();
@@ -156,40 +156,38 @@ class format_mintcampus_external extends external_api {
         $coursecompletion = format_mintcampus_section_completion_graphic(false, $course);
         $sectioncompletion = format_mintcampus_section_completion_graphic($sections[$sectionnum], $course);
 
-//        $courserating = \html_writer::tag('i','',['id'=>'mintcampusrating','class'=>'fa fa-star-half-o fa-3','aria-hidden'=>'true']);
+// $courserating = \html_writer::tag('i','',['id'=>'mintcampusrating','class'=>'fa fa-star-half-o fa-3','aria-hidden'=>'true']);
         $courserating = '';
         $starsnum = 5;
-        for($i = 0; $i < $starsnum; $i++) {
-            $courserating .= \html_writer::tag('i','',['id'=>'mintcampusrating','class'=>'fa fa-star-o fa-3','aria-hidden'=>'true']);
+        for ($i = 0; $i < $starsnum; $i++) {
+            $courserating .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star-o fa-3', 'aria-hidden' => 'true']);
         }
 
         $headerdata = [
-            'activitynavigation'=>$activitynavigation,
+            'activitynavigation' => $activitynavigation,
             'coursecompletionstate' => $coursecompletion,
             'sectioncompletionstate' => $sectioncompletion,
-            'sectionnum'=> $sectionnum,
-            'courserating'=> $courserating,
-            'courseid' => $courseid
+            'sectionnum' => $sectionnum,
+            'courserating' => $courserating,
+            'courseid' => $courseid,
         ];
 
 
-        $activitydata= [
+        $activitydata = [
             'activityheader' => $OUTPUT->render_from_template('format_mintcampus/activityheader', $headerdata),
-            'activityfooter' => $OUTPUT->render_from_template('format_mintcampus/activityfooter', ['activitynavigation'=>$activitynavigation]),
+            'activityfooter' => $OUTPUT->render_from_template('format_mintcampus/activityfooter', ['activitynavigation' => $activitynavigation]),
         ];
 
-        if($DB->get_record('format_mintcampus_menuitem',['courseid'=>$courseid,'cmid'=>$cmid]) && $prevmod){
-
-            while ($DB->get_record('format_mintcampus_menuitem',['courseid'=>$courseid,'cmid'=>$prevmod->id]) || $prevmod==null){
+        if ($DB->get_record('format_mintcampus_menuitem', ['courseid' => $courseid, 'cmid' => $cmid]) && $prevmod) {
+            while ($DB->get_record('format_mintcampus_menuitem', ['courseid' => $courseid, 'cmid' => $prevmod->id]) || $prevmod == null) {
                 $position--;
                 if ($position > 0) {
                     $prevmod = $mods[$modids[$position - 1]];
-                }else{
+                } else {
                     $prevmod = null;
                 }
             }
             $activitydata['previouscm'] = $prevmod <> null ? $prevmod->id : 0;
-
         }
 
         return $activitydata;
@@ -201,10 +199,11 @@ class format_mintcampus_external extends external_api {
      */
     public static function get_activity_navigation_returns() {
         return new external_single_structure(
-            array(
-                'activityheader' => new external_value(PARAM_RAW, 'Activity header',true),
-                'activityfooter' => new external_value(PARAM_RAW, 'Activity footer',true),
-                'previouscm' => new external_value(PARAM_INT, 'Previous ',false,0)), 'notification message'
+            [
+                'activityheader' => new external_value(PARAM_RAW, 'Activity header', true),
+                'activityfooter' => new external_value(PARAM_RAW, 'Activity footer', true),
+                'previouscm' => new external_value(PARAM_INT, 'Previous ', false, 0)],
+            'notification message'
         );
     }
 
@@ -213,11 +212,11 @@ class format_mintcampus_external extends external_api {
      * @return external_function_parameters
      */
     public static function add_rating_parameters() {
-        return new external_function_parameters (
-            array(
+        return new external_function_parameters(
+            [
                 'courseid'        => new external_value(PARAM_INT, 'associated id'),
-                'rating'        => new external_value(PARAM_TEXT, 'user rating')
-            )
+                'rating'        => new external_value(PARAM_TEXT, 'user rating'),
+            ]
         );
     }
 
@@ -229,12 +228,12 @@ class format_mintcampus_external extends external_api {
      * @throws invalid_parameter_exception
      */
     public static function add_rating($courseid, $rating) {
-        global $DB,$USER, $CFG;
+        global $DB, $USER, $CFG;
 
-        $params = array(
+        $params = [
             'courseid' => $courseid,
-            'rating' => $rating
-        );
+            'rating' => $rating,
+        ];
 
         // Validate and normalize parameters.
         $params = self::validate_parameters(self::add_rating_parameters(), $params);
@@ -242,20 +241,20 @@ class format_mintcampus_external extends external_api {
         $courseid = $params['courseid'];
         $rating = $params['rating'];
 
-        if($ratingprompts=$DB->get_record('format_mintcampus_ratings',['courseid'=>$courseid, 'userid'=>$USER->id])){
-            $ratingprompts->rating=$rating;
-            $ratingprompts->timemodified=time();
-            $DB->update_record('format_mintcampus_ratings',$ratingprompts);
-        }else{
-            $params['userid']=$USER->id;
-            $params['timemodified']=time();
-            $DB->insert_record('format_mintcampus_ratings',$params);
+        if ($ratingprompts = $DB->get_record('format_mintcampus_ratings', ['courseid' => $courseid, 'userid' => $USER->id])) {
+            $ratingprompts->rating = $rating;
+            $ratingprompts->timemodified = time();
+            $DB->update_record('format_mintcampus_ratings', $ratingprompts);
+        } else {
+            $params['userid'] = $USER->id;
+            $params['timemodified'] = time();
+            $DB->insert_record('format_mintcampus_ratings', $params);
         }
 
-        $returndata = array(
+        $returndata = [
             'courseid' => $courseid,
-            'rating' => $rating
-        );
+            'rating' => $rating,
+        ];
 
         return $returndata;
     }
@@ -268,9 +267,10 @@ class format_mintcampus_external extends external_api {
      */
     public static function add_rating_returns() {
         return new external_single_structure(
-            array(
-                'courseid' => new external_value(PARAM_RAW, 'Course rating body',true),
-                'rating' => new external_value(PARAM_RAW, 'Course rating body',true)), 'notification message'
+            [
+                'courseid' => new external_value(PARAM_RAW, 'Course rating body', true),
+                'rating' => new external_value(PARAM_RAW, 'Course rating body', true)],
+            'notification message'
         );
     }
 
@@ -281,11 +281,11 @@ class format_mintcampus_external extends external_api {
      * @since Moodle 3.2
      */
     public static function add_comment_parameters() {
-        return new external_function_parameters (
-            array(
+        return new external_function_parameters(
+            [
                 'courseid'        => new external_value(PARAM_INT, 'associated id'),
-                'submission'        => new external_value(PARAM_TEXT, 'user comment')
-            )
+                'submission'        => new external_value(PARAM_TEXT, 'user comment'),
+            ]
         );
     }
 
@@ -297,11 +297,11 @@ class format_mintcampus_external extends external_api {
      * @throws invalid_parameter_exception
      */
     public static function add_comment($courseid, $submission) {
-        global $USER,$DB;
-        $params = array(
+        global $USER, $DB;
+        $params = [
             'courseid' => $courseid,
-            'submission' => $submission
-        );
+            'submission' => $submission,
+        ];
 
         // Validate and normalize parameters.
         $params = self::validate_parameters(self::add_comment_parameters(), $params);
@@ -309,20 +309,20 @@ class format_mintcampus_external extends external_api {
         $courseid = $params['courseid'];
         $submission = $params['submission'];
 
-        if($ratingprompts=$DB->get_record('format_mintcampus_comments',['courseid'=>$courseid,'userid'=>$USER->id])){
-            $ratingprompts->submission=$submission;
-            $ratingprompts->timemodified=time();
-            $DB->update_record('format_mintcampus_comments',$ratingprompts);
-        }else{
-            $DB->insert_record('format_mintcampus_comments',['courseid'=>$courseid,
-                'submission'=>$submission,
-                'userid'=>$USER->id,'timemodified'=>time()]);
+        if ($ratingprompts = $DB->get_record('format_mintcampus_comments', ['courseid' => $courseid, 'userid' => $USER->id])) {
+            $ratingprompts->submission = $submission;
+            $ratingprompts->timemodified = time();
+            $DB->update_record('format_mintcampus_comments', $ratingprompts);
+        } else {
+            $DB->insert_record('format_mintcampus_comments', ['courseid' => $courseid,
+                'submission' => $submission,
+                'userid' => $USER->id, 'timemodified' => time()]);
         }
 
-        $returndata = array(
+        $returndata = [
             'courseid' => $courseid,
-            'submission' => $submission
-        );
+            'submission' => $submission,
+        ];
 
         return $returndata;
     }
@@ -335,9 +335,10 @@ class format_mintcampus_external extends external_api {
      */
     public static function add_comment_returns() {
         return new external_single_structure(
-            array(
-                'courseid' => new external_value(PARAM_RAW, 'Course rating body',true),
-                'submission' => new external_value(PARAM_RAW, 'Course rating body',true)), 'notification message'
+            [
+                'courseid' => new external_value(PARAM_RAW, 'Course rating body', true),
+                'submission' => new external_value(PARAM_RAW, 'Course rating body', true)],
+            'notification message'
         );
     }
 
@@ -349,7 +350,7 @@ class format_mintcampus_external extends external_api {
      */
     public static function get_rating_parameters() {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_REQUIRED)
+            'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_REQUIRED),
         ]);
     }
 
@@ -361,10 +362,10 @@ class format_mintcampus_external extends external_api {
      * @throws invalid_parameter_exception
      */
     public static function get_rating($courseid) {
-        global $DB,$USER,$OUTPUT,$PAGE, $CFG;
-        $params = array(
+        global $DB, $USER, $OUTPUT, $PAGE, $CFG;
+        $params = [
             'courseid' => $courseid,
-        );
+        ];
         $userid = $USER->id;
         // Validate and normalize parameters.
         $params = self::validate_parameters(self::get_rating_parameters(), $params);
@@ -402,25 +403,25 @@ class format_mintcampus_external extends external_api {
         }
 
         $data = [
-            'header' => get_string('courserating','format_mintcampus'),
-            'courseid' =>  $courseid,
-            'question' => get_string('courseratingquestion','format_mintcampus'),
-            'title'=> '',
-            'comment' => get_string('courseratingcomment','format_mintcampus'),
-            'placeholder' => get_string('placeholder','format_mintcampus'),
+            'header' => get_string('courserating', 'format_mintcampus'),
+            'courseid' => $courseid,
+            'question' => get_string('courseratingquestion', 'format_mintcampus'),
+            'title' => '',
+            'comment' => get_string('courseratingcomment', 'format_mintcampus'),
+            'placeholder' => get_string('placeholder', 'format_mintcampus'),
             'completionstatus' => $completionstatus ? 1 : null,
             'completed' => $completed,
-            'ratings' => $ratings
+            'ratings' => $ratings,
         ];
 
-        if($rating = $DB->get_record('format_mintcampus_ratings',['courseid'=>$courseid,'userid'=>$USER->id])){
-            $data['selected'.$rating->rating] = true;
+        if ($rating = $DB->get_record('format_mintcampus_ratings', ['courseid' => $courseid, 'userid' => $USER->id])) {
+            $data['selected' . $rating->rating] = true;
         }
 
-        if($comment=$DB->get_record('format_mintcampus_comments',['courseid'=>$courseid, 'userid'=>$USER->id])){
-            $data['submission']=$comment->submission;
-        }else{
-            $data['submission']='';
+        if ($comment = $DB->get_record('format_mintcampus_comments', ['courseid' => $courseid, 'userid' => $USER->id])) {
+            $data['submission'] = $comment->submission;
+        } else {
+            $data['submission'] = '';
         }
 
         return ['ratingprompt' => $OUTPUT->render_from_template('format_mintcampus/rateprompt', $data)];
@@ -434,8 +435,9 @@ class format_mintcampus_external extends external_api {
      */
     public static function get_rating_returns() {
         return new external_single_structure(
-            array(
-                'ratingprompt' => new external_value(PARAM_RAW, 'Course rating body',true)), 'notification message'
+            [
+                'ratingprompt' => new external_value(PARAM_RAW, 'Course rating body', true)],
+            'notification message'
         );
     }
 
@@ -446,10 +448,10 @@ class format_mintcampus_external extends external_api {
      * @since Moodle 3.2
      */
     public static function get_activity_setting_parameters() {
-        return new external_function_parameters (
-            array(
-                'courseid' => new external_value(PARAM_INT, 'associated id')
-            )
+        return new external_function_parameters(
+            [
+                'courseid' => new external_value(PARAM_INT, 'associated id'),
+            ]
         );
     }
 
@@ -462,9 +464,9 @@ class format_mintcampus_external extends external_api {
      */
     public static function get_activity_setting($courseid) {
         global $DB;
-        $params = array(
-            'courseid' => $courseid
-        );
+        $params = [
+            'courseid' => $courseid,
+        ];
 
         // Validate and normalize parameters.
         $params = self::validate_parameters(self::get_activity_setting_parameters(), $params);
@@ -473,12 +475,12 @@ class format_mintcampus_external extends external_api {
         $courseid = $params['courseid'];
 
 
-        if($togglesettings=$DB->get_records('format_mintcampus_menuitem',['courseid'=>$courseid])){
-            foreach ($togglesettings as $togglesetting){
-                $returndata[]=['cmid' => $togglesetting->cmid];
+        if ($togglesettings = $DB->get_records('format_mintcampus_menuitem', ['courseid' => $courseid])) {
+            foreach ($togglesettings as $togglesetting) {
+                $returndata[] = ['cmid' => $togglesetting->cmid];
             }
-        }else{
-            $returndata[]= ['cmid' => 0];
+        } else {
+            $returndata[] = ['cmid' => 0];
         }
 
         return $returndata;
@@ -492,9 +494,9 @@ class format_mintcampus_external extends external_api {
      */
 
     public static function get_activity_setting_returns() {
-    return new external_multiple_structure(new external_single_structure([
-        'cmid' => new external_value(PARAM_INT, 'The component for the icon.')
-    ]));
+        return new external_multiple_structure(new external_single_structure([
+        'cmid' => new external_value(PARAM_INT, 'The component for the icon.'),
+        ]));
     }
 
     /**
@@ -504,12 +506,12 @@ class format_mintcampus_external extends external_api {
      * @since Moodle 3.2
      */
     public static function set_activity_setting_parameters() {
-        return new external_function_parameters (
-            array(
+        return new external_function_parameters(
+            [
                 'courseid'        => new external_value(PARAM_INT, 'associated id'),
                 'cmid'        => new external_value(PARAM_INT, 'associated id'),
-                'state'        => new external_value(PARAM_BOOL, 'toggle state')
-            )
+                'state'        => new external_value(PARAM_BOOL, 'toggle state'),
+            ]
         );
     }
 
@@ -521,12 +523,12 @@ class format_mintcampus_external extends external_api {
      * @throws invalid_parameter_exception
      */
     public static function set_activity_setting($courseid, $cmid, $state) {
-        global $USER,$DB;
-        $params = array(
+        global $USER, $DB;
+        $params = [
             'courseid' => $courseid,
             'cmid' => $cmid,
-            'state' => $state
-        );
+            'state' => $state,
+        ];
 
         // Validate and normalize parameters.
         $params = self::validate_parameters(self::set_activity_setting_parameters(), $params);
@@ -535,19 +537,19 @@ class format_mintcampus_external extends external_api {
         $cmid = $params['cmid'];
         $state = $params['state'];
 
-        if($state){
-            $id = $DB->insert_record('format_mintcampus_menuitem',['courseid'=>$courseid,
-                'cmid'=>$cmid,
-                'userid'=>$USER->id,'timemodified'=>time()]);
-        }else{
-            $state = $DB->delete_records('format_mintcampus_menuitem',['courseid'=>$courseid,
-                'cmid'=>$cmid]);
+        if ($state) {
+            $id = $DB->insert_record('format_mintcampus_menuitem', ['courseid' => $courseid,
+                'cmid' => $cmid,
+                'userid' => $USER->id, 'timemodified' => time()]);
+        } else {
+            $state = $DB->delete_records('format_mintcampus_menuitem', ['courseid' => $courseid,
+                'cmid' => $cmid]);
         }
 
-        $returndata = array(
+        $returndata = [
             'id' => $id,
-            'state' => $state
-        );
+            'state' => $state,
+        ];
 
         return $returndata;
     }
@@ -560,9 +562,10 @@ class format_mintcampus_external extends external_api {
      */
     public static function set_activity_setting_returns() {
         return new external_single_structure(
-            array(
-                'id' => new external_value(PARAM_INT, 'toggle id',true),
-                'state' => new external_value(PARAM_BOOL, 'State',true)), 'notification message'
+            [
+                'id' => new external_value(PARAM_INT, 'toggle id', true),
+                'state' => new external_value(PARAM_BOOL, 'State', true)],
+            'notification message'
         );
     }
 
@@ -573,10 +576,10 @@ class format_mintcampus_external extends external_api {
      * @since Moodle 3.2
      */
     public static function delete_rating_parameters() {
-        return new external_function_parameters (
-            array(
-                'ratingid' => new external_value(PARAM_INT, 'The ID of the rating to be deleted.')
-            )
+        return new external_function_parameters(
+            [
+                'ratingid' => new external_value(PARAM_INT, 'The ID of the rating to be deleted.'),
+            ]
         );
     }
 
@@ -615,7 +618,7 @@ class format_mintcampus_external extends external_api {
     public static function delete_rating_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the delete operation.'),
-            'message' => new external_value(PARAM_TEXT, 'Message describing the operation result.')
+            'message' => new external_value(PARAM_TEXT, 'Message describing the operation result.'),
         ]);
     }
 
@@ -625,10 +628,10 @@ class format_mintcampus_external extends external_api {
      * @return external_function_parameters
      */
     public static function delete_comment_parameters() {
-        return new external_function_parameters (
-            array(
-                'commentid' => new external_value(PARAM_INT, 'The ID of the rating to be deleted.')
-            )
+        return new external_function_parameters(
+            [
+                'commentid' => new external_value(PARAM_INT, 'The ID of the rating to be deleted.'),
+            ]
         );
     }
 
@@ -644,16 +647,16 @@ class format_mintcampus_external extends external_api {
         global $DB, $USER;
 
         // Validate parameters
-        $params = self::validate_parameters(self::delete_comment_parameters(), array('commentid' => $commentid));
+        $params = self::validate_parameters(self::delete_comment_parameters(), ['commentid' => $commentid]);
 
         $commentid = $params['commentid'];
 
         // Check if the comment exists before deleting
-        if ($DB->record_exists('format_mintcampus_comments', array('id' => $commentid))) {
-            $DB->delete_records('format_mintcampus_comments', array('id' => $commentid));
-            $response = array('status' => 'success', 'message' => 'Comment deleted successfully.');
+        if ($DB->record_exists('format_mintcampus_comments', ['id' => $commentid])) {
+            $DB->delete_records('format_mintcampus_comments', ['id' => $commentid]);
+            $response = ['status' => 'success', 'message' => 'Comment deleted successfully.'];
         } else {
-            $response = array('status' => 'error', 'message' => 'Comment not found.');
+            $response = ['status' => 'error', 'message' => 'Comment not found.'];
         }
 
         return $response;
@@ -665,10 +668,9 @@ class format_mintcampus_external extends external_api {
      * @return external_single_structure
      */
     public static function delete_comment_returns() {
-        return new external_single_structure(array(
+        return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the delete operation.'),
-            'message' => new external_value(PARAM_TEXT, 'Message describing the operation result.')
-        ));
+            'message' => new external_value(PARAM_TEXT, 'Message describing the operation result.'),
+        ]);
     }
 }
-

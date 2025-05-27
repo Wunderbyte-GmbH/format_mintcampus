@@ -41,10 +41,9 @@ require_once($CFG->dirroot . '/course/format/mintcampus/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class content extends content_base {
-
-    private $sectioncompletionpercentage = array();
-    private $sectioncompletionmarkup = array();
-    private $sectioncompletioncalculated = array();
+    private $sectioncompletionpercentage = [];
+    private $sectioncompletionmarkup = [];
+    private $sectioncompletioncalculated = [];
     private $courseformat;
     const MODULE_CONTENTS_NUM = 3;
     const MODULE_CONTENT_FIELD_NAME_BASE = 'modulecontent_';
@@ -86,7 +85,7 @@ class content extends content_base {
         $currentsectionid = 0;
 
         if ($editing) {
-            $data->coursesettings = new \moodle_url('/course/edit.php', array('id' => $course->id));
+            $data->coursesettings = new \moodle_url('/course/edit.php', ['id' => $course->id]);
             $data->courseid = $course->id;
         }
 
@@ -97,12 +96,12 @@ class content extends content_base {
 
             if (!$singlesection && !$editing) {
                 $coursecontext = \context_course::instance($course->id);
-                $data->initialsection = $this->export_initial_section($output, $coursesettings,$coursecontext);
+                $data->initialsection = $this->export_initial_section($output, $coursesettings, $coursecontext);
                 $modinfo = get_fast_modinfo($course);
                 $sectioninfo = $modinfo->get_section_info_all();
-                $cmlist = new content\section\cmlist($format,$sectioninfo[0]);
-                $data->initialcmlist= $cmlist->export_for_template($output);
-            }elseif(!$singlesection){
+                $cmlist = new content\section\cmlist($format, $sectioninfo[0]);
+                $data->initialcmlist = $cmlist->export_for_template($output);
+            } else if (!$singlesection) {
                 $data->initialsection = $initialsection;
             }
             if (($editing) || ($singlesection)) { // This triggers the display of the standard list of section(s).
@@ -128,17 +127,23 @@ class content extends content_base {
             $data->hasnavigation = true;
             $data->singlesection = array_shift($data->sections);
             $data->sectionreturn = $singlesection;
-            $data->maincoursepage = new \moodle_url('/course/view.php', array('id' => $course->id));
+            $data->maincoursepage = new \moodle_url('/course/view.php', ['id' => $course->id]);
         } else {
             $coursesettings = $format->get_settings();
             $toolbox = \format_mintcampus\toolbox::get_instance();
-            $coursesectionimages = $DB->get_records('format_mintcampus_image', array('courseid' => $course->id));
+            $coursesectionimages = $DB->get_records('format_mintcampus_image', ['courseid' => $course->id]);
             if (!empty($coursesectionimages)) {
                 $fs = get_file_storage();
                 $coursecontext = \context_course::instance($course->id);
                 foreach ($coursesectionimages as $coursesectionimage) {
-                    $replacement = $toolbox->check_displayed_image($coursesectionimage, $course->id, $coursecontext->id,
-                        $coursesectionimage->sectionid, $format, $fs);
+                    $replacement = $toolbox->check_displayed_image(
+                        $coursesectionimage,
+                        $course->id,
+                        $coursecontext->id,
+                        $coursesectionimage->sectionid,
+                        $format,
+                        $fs
+                    );
                     if (!empty($replacement)) {
                         $coursesectionimages[$coursesectionimage->id] = $replacement;
                     }
@@ -150,8 +155,8 @@ class content extends content_base {
                 $data->popup = false;
                 if ((!empty($coursesettings['popup'])) && ($coursesettings['popup'] == 2)) {
                     $data->popup = true;
-                    $data->popupsections = array();
-                    $potentialpopupsections = array();
+                    $data->popupsections = [];
+                    $potentialpopupsections = [];
                     foreach ($sections as $section) {
                         $potentialpopupsections[$section->id] = $section;
                     }
@@ -159,21 +164,21 @@ class content extends content_base {
             }
 
             // Suitable array.
-            $sectionimages = array();
+            $sectionimages = [];
             if (!empty($coursesectionimages)) {
                 foreach ($coursesectionimages as $coursesectionimage) {
                     $sectionimages[$coursesectionimage->sectionid] = $coursesectionimage;
                 }
             }
             // Now iterate over the sections.
-            $data->mintcampussections = array();
+            $data->mintcampussections = [];
             $sectionsformintcampus = $this->get_mintcampus_sections($output, $coursesettings);
             $iswebp = false;
 
             $completionshown = false;
             $headerimages = false;
             if ($editing) {
-                $datasectionmap = array();
+                $datasectionmap = [];
                 foreach ($data->sections as $datasectionkey => $datasection) {
                     $datasectionmap[$datasection->id] = $datasectionkey;
                 }
@@ -182,16 +187,20 @@ class content extends content_base {
                 // Do we have an image?
                 if ((array_key_exists($section->id, $sectionimages)) && ($sectionimages[$section->id]->displayedimagestate >= 1)) {
                     $sectionimages[$section->id]->imageuri = $toolbox->get_displayed_image_uri(
-                        $sectionimages[$section->id], $coursecontext->id, $section->id, $iswebp);
+                        $sectionimages[$section->id],
+                        $coursecontext->id,
+                        $section->id,
+                        $iswebp
+                    );
                 } else {
                     // No.
-                    $sectionimages[$section->id] = new stdClass;
+                    $sectionimages[$section->id] = new stdClass();
                     $sectionimages[$section->id]->generatedimageuri = $output->get_generated_image_for_id($section->id);
                 }
                 // Number.
                 $sectionimages[$section->id]->number = $section->num;
                 $sectionimages[$section->id]->scgraphic = $section->scgraphic;
-//                $sectionimages[$section->id]->summary = $section->summary;
+// $sectionimages[$section->id]->summary = $section->summary;
 
                 // Alt text.
                 $sectionformatoptions = $format->get_format_options($section);
@@ -213,9 +222,9 @@ class content extends content_base {
                     }
                 } else {
                     // Section link.
-                    if($section->activitylink){
+                    if ($section->activitylink) {
                         $sectionimages[$section->id]->sectionurl = $section->activitylink;
-                    }else{
+                    } else {
                         $sectionimages[$section->id]->sectionurl = false;
                     }
 
@@ -225,7 +234,7 @@ class content extends content_base {
                     // Section break.
                     if ($sectionformatoptions['sectionbreak'] == 2) { // Yes.
                         $sectionimages[$section->id]->sectionbreak = true;
-                        if (!empty ($sectionformatoptions['sectionbreakheading'])) {
+                        if (!empty($sectionformatoptions['sectionbreakheading'])) {
                             // Note:  As a PARAM_TEXT, then does need to be passed through 'format_string' for multi-lang or not?
                             $sectionimages[$section->id]->sectionbreakheading = format_text(
                                 $sectionformatoptions['sectionbreakheading'],
@@ -260,9 +269,11 @@ class content extends content_base {
             }
         }
 
-        if ($this->hasaddsection) {
-            $addsection = new $this->addsectionclass($format);
+        if (!$this->format->get_sectionnum()) {
+            $addsectionclass = $format->get_output_classname('content\\addsection');
+            $addsection = new $addsectionclass($format);
             $data->numsections = $addsection->export_for_template($output);
+            $data->insertafter = true;
         }
         return $data;
     }
@@ -292,10 +303,16 @@ class content extends content_base {
         foreach ($sectioninfos as $thissection) {
             // The course/view.php check the section existence but the output can be called from other parts so we need to check it.
             if (!$thissection) {
-                throw new \moodle_exception('unknowncoursesection', 'error', '',
-                    get_string('unknowncoursesection', 'error',
-                        course_get_url($course).' - '.format_string($course->fullname))
-                    );
+                throw new \moodle_exception(
+                    'unknowncoursesection',
+                    'error',
+                    '',
+                    get_string(
+                        'unknowncoursesection',
+                        'error',
+                        course_get_url($course) . ' - ' . format_string($course->fullname)
+                    )
+                );
             }
 
             if ($thissection->section > $numsections) {
@@ -306,13 +323,13 @@ class content extends content_base {
                 continue;
             }
 
-            $section = new stdClass;
+            $section = new stdClass();
             $section->id = $thissection->id;
             $section->num = $thissection->section;
             $section->name = $output->section_title_without_link($thissection, $course);
             $section->scgraphic = $this->section_completion_graphic($thissection, $course, false, $output);
-//            $section->summary = $this->make_section_summary($thissection, 200, '<br><ul><li>');
-            $section->activitylink = $this->get_section_activity_link($thissection->section,$course);
+// $section->summary = $this->make_section_summary($thissection, 200, '<br><ul><li>');
+            $section->activitylink = $this->get_section_activity_link($thissection->section, $course);
             $sections[] = $section;
         }
 
@@ -350,8 +367,10 @@ class content extends content_base {
                         if ($completioninfo->is_enabled($thismod) != COMPLETION_TRACKING_NONE) {
                             $total++;
                             $completiondata = $completioninfo->get_data($thismod, true);
-                            if ($completiondata->completionstate == COMPLETION_COMPLETE ||
-                                $completiondata->completionstate == COMPLETION_COMPLETE_PASS) {
+                            if (
+                                $completiondata->completionstate == COMPLETION_COMPLETE ||
+                                $completiondata->completionstate == COMPLETION_COMPLETE_PASS
+                            ) {
                                 $complete++;
                             }
                         }
@@ -404,16 +423,16 @@ class content extends content_base {
      * @param stdClass $course the course record from DB.
      * @return string the markup or empty if nothing to show.
      */
-    public function section_completion_graphic($section, $course, $activitiesstat,\renderer_base $output) {
+    public function section_completion_graphic($section, $course, $activitiesstat, \renderer_base $output) {
         $markup = '';
         if (($course->enablecompletion)) {
-            if(list($complete,$total)= $this->section_activity_progress($section, $course)){
+            if ([$complete, $total] = $this->section_activity_progress($section, $course)) {
                 $percentage = round(($complete / $total) * 100);
-                if($activitiesstat){
-                    $progressbar = ['progressbar'=>['percents'=>$percentage,'activities'=>"{$complete}/{$total}",'primarycolor'=>"#8139a3",'secondarycolor'=>'#d0b5dd','fontcolor'=>'#ffffff']];
+                if ($activitiesstat) {
+                    $progressbar = ['progressbar' => ['percents' => $percentage, 'activities' => "{$complete}/{$total}", 'primarycolor' => "#8139a3", 'secondarycolor' => '#d0b5dd', 'fontcolor' => '#ffffff']];
                     $markup = $output->render_from_template('format_mintcampus/progressbar', $progressbar);
-                }else{
-                    $progressbar = ['progressbar'=>['percents'=>$percentage,'activities'=>null,'primarycolor'=>"#8139a3",'secondarycolor'=>'#d0b5dd','fontcolor'=>'#ffffff']];
+                } else {
+                    $progressbar = ['progressbar' => ['percents' => $percentage, 'activities' => null, 'primarycolor' => "#8139a3", 'secondarycolor' => '#d0b5dd', 'fontcolor' => '#ffffff']];
                     $markup = $output->render_from_template('format_mintcampus/progressbar', $progressbar);
                 }
             }
@@ -434,11 +453,10 @@ class content extends content_base {
         return null;
     }
 
-    private function make_list_of_module_contents($sectionformatoptions): string
-    {
-        $modulecontents = array();
+    private function make_list_of_module_contents($sectionformatoptions): string {
+        $modulecontents = [];
         for ($i = 1; $i <= self::MODULE_CONTENTS_NUM; $i++) {
-            $fieldname = content::MODULE_CONTENT_FIELD_NAME_BASE . $i;
+            $fieldname = self::MODULE_CONTENT_FIELD_NAME_BASE . $i;
             if (!empty($sectionformatoptions[$fieldname])) {
                 $modulecontents[] = $sectionformatoptions[$fieldname];
             }
@@ -446,7 +464,7 @@ class content extends content_base {
 
         return \html_writer::alist(
             $modulecontents,
-            array('class' => 'module-contents')
+            ['class' => 'module-contents']
         );
     }
 
@@ -460,36 +478,36 @@ class content extends content_base {
                 preg_match_all($pattern, $summary, $matches);
 
                 $tags = $matches[1];
-                $closingTags = array_filter($tags, function($tag) {
+                $closingtags = array_filter($tags, function ($tag) {
                     return strpos($tag, '/') !== false;
                 });
 
-                foreach ($closingTags as $closingTag) {
-                    $pinedTagIndex = null;
-                    $openingTag = trim($closingTag, '/');
+                foreach ($closingtags as $closingtag) {
+                    $pinedtagindex = null;
+                    $openingtag = trim($closingtag, '/');
                     foreach ($tags as $index => $tag) {
-                        if ($openingTag === $tag) {
-                            $pinedTagIndex = $index;
+                        if ($openingtag === $tag) {
+                            $pinedtagindex = $index;
                         }
-                        if ($closingTag === $tag) {
-                            if ($pinedTagIndex !== null) {
+                        if ($closingtag === $tag) {
+                            if ($pinedtagindex !== null) {
                                 unset($tags[$index]);
-                                unset($tags[$pinedTagIndex]);
-                                $pinedTagIndex = null;
+                                unset($tags[$pinedtagindex]);
+                                $pinedtagindex = null;
                             }
                         }
                     }
                 }
 
-                $missingClosingTags = array_reverse($tags);
-                $missingClosingTags = array_map(function($tag) {
+                $missingclosingtags = array_reverse($tags);
+                $missingclosingtags = array_map(function ($tag) {
                     return "</$tag>";
-                }, $missingClosingTags);
+                }, $missingclosingtags);
 
-                $summary .= '...' . implode('', $missingClosingTags);
+                $summary .= '...' . implode('', $missingclosingtags);
             }
         }
-        return \html_writer::tag('div', $summary, array('id' => 'flexaccordsectionsummary-'.$section ,'class' => 'sectionsummary'));
+        return \html_writer::tag('div', $summary, ['id' => 'flexaccordsectionsummary-' . $section, 'class' => 'sectionsummary']);
     }
 
     private function make_course_summary($course, $charlength) {
@@ -498,14 +516,14 @@ class content extends content_base {
         $options->noclean = false;
         $options->overflowdiv = false;
 
-        $summary = format_text($course->summary, $course->summaryformat,$options);
+        $summary = format_text($course->summary, $course->summaryformat, $options);
         $summary = strip_tags($summary, '<br> <p> <strong> <ol> <li> <ul>');
 
         if (!empty($summary) && $summary != "") {
-            $data = \html_writer::div($summary,'sectionsummary', array('id' => 'flexaccordcoursesummary-0'));
+            $data = \html_writer::div($summary, 'sectionsummary', ['id' => 'flexaccordcoursesummary-0']);
             return $data;
-        }else{
-            return \html_writer::tag('p',get_string('nocoursesummary','format_mintcampus'),['class'=>'alert alert-info']);
+        } else {
+            return \html_writer::tag('p', get_string('nocoursesummary', 'format_mintcampus'), ['class' => 'alert alert-info']);
         }
 
         return null;
@@ -522,18 +540,18 @@ class content extends content_base {
      */
     protected function section_activity_progress($section, $course) {
         $modinfo = get_fast_modinfo($course);
-        if ($section&&empty($modinfo->sections[$section->section])) {
+        if ($section && empty($modinfo->sections[$section->section])) {
             return false;
         }
 
         // Generate array with count of activities in this section:
-        $sectionmods = array();
+        $sectionmods = [];
         $total = 0;
         $complete = 0;
         $cancomplete = isloggedin() && !isguestuser();
         $completioninfo = new \completion_info($course);
 
-        if($section){
+        if ($section) {
             foreach ($modinfo->sections[$section->section] as $cmid) {
                 $thismod = $modinfo->cms[$cmid];
 
@@ -550,15 +568,17 @@ class content extends content_base {
                     if ($cancomplete && $completioninfo->is_enabled($thismod) != COMPLETION_TRACKING_NONE) {
                         $total++;
                         $completiondata = $completioninfo->get_data($thismod, true);
-                        if ($completiondata->completionstate == COMPLETION_COMPLETE ||
-                            $completiondata->completionstate == COMPLETION_COMPLETE_PASS) {
+                        if (
+                            $completiondata->completionstate == COMPLETION_COMPLETE ||
+                            $completiondata->completionstate == COMPLETION_COMPLETE_PASS
+                        ) {
                             $complete++;
                         }
                     }
                 }
             }
-        }else{
-            foreach ($modinfo->sections as $ssection){
+        } else {
+            foreach ($modinfo->sections as $ssection) {
                 foreach ($ssection as $cmid) {
                     $thismod = $modinfo->cms[$cmid];
 
@@ -575,8 +595,10 @@ class content extends content_base {
                         if ($cancomplete && $completioninfo->is_enabled($thismod) != COMPLETION_TRACKING_NONE) {
                             $total++;
                             $completiondata = $completioninfo->get_data($thismod, true);
-                            if ($completiondata->completionstate == COMPLETION_COMPLETE ||
-                                $completiondata->completionstate == COMPLETION_COMPLETE_PASS) {
+                            if (
+                                $completiondata->completionstate == COMPLETION_COMPLETE ||
+                                $completiondata->completionstate == COMPLETION_COMPLETE_PASS
+                            ) {
                                 $complete++;
                             }
                         }
@@ -612,24 +634,22 @@ class content extends content_base {
         $sections = $modinfo->get_section_info_all();
 
         $mediamanager = \core_media_manager::instance($PAGE);
-        $embedoptions = array(
+        $embedoptions = [
             \core_media_manager::OPTION_TRUSTED => true,
-            \core_media_manager::OPTION_BLOCK => true
-        );
+            \core_media_manager::OPTION_BLOCK => true,
+        ];
 
         $generatedimageuri = false;
-        if($videomoodleurl = format_mintcampus_get_video($coursecontext)){
+        if ($videomoodleurl = format_mintcampus_get_video($coursecontext)) {
             $coursevideoimage = $mediamanager->embed_url($videomoodleurl, 'Course video', 0, 0, $embedoptions);
-        } else if ($imagemoodleurl = format_mintcampus_get_image($coursecontext)){
+        } else if ($imagemoodleurl = format_mintcampus_get_image($coursecontext)) {
             $coursevideoimage = resourcelib_embed_image($imagemoodleurl->out(), 'Course image');
-        }else{
+        } else {
             $generatedimageuri = true;
             $coursevideoimage = $this->get_dummy_image_for_id($course->id);
         }
-        $section=$sections[0];
-        // Generate section list
+        $section = $sections[0];
 
-        // $courserating = \html_writer::tag('i','',['id'=>'mintcampusrating','class'=>'fa fa-star-half-o fa-3','aria-hidden'=>'true']);
         $courserating = '';
         $starsnum = 5;
         $rating = $DB->get_record_sql(
@@ -640,7 +660,7 @@ class content extends content_base {
             FROM {format_mintcampus_ratings}
             WHERE courseid = $1
             GROUP BY courseid",
-            array('courseid' => $course->id)
+            ['courseid' => $course->id]
         );
 
         $starsoutput = '';
@@ -656,7 +676,7 @@ class content extends content_base {
             $emptystars = $starsnum - ($fullstars + $halfstars);  // Remaining stars will be empty
 
             // Start rendering the stars
-            
+
             for ($i = 0; $i < $fullstars; $i++) {
                 $starsoutput .= \html_writer::tag('i', '', ['id' => 'mintcampusrating', 'class' => 'fa fa-star fa-3', 'aria-hidden' => 'true']);
             }
@@ -677,7 +697,7 @@ class content extends content_base {
                 ' . $starsoutput . '
             </div>
             <div class="review-text">
-                Aus '. $reviews . ' Bewertungen
+                Aus ' . $reviews . ' Bewertungen
             </div>
         </div> </div>';
         } else {
@@ -694,7 +714,7 @@ class content extends content_base {
                     ' . $starsoutput . '
                 </div>
                 <div class="review-text">
-                    Aus '. 0 . ' Bewertungen
+                    Aus ' . 0 . ' Bewertungen
                 </div>
                 </div> </div>';
         }
@@ -705,20 +725,20 @@ class content extends content_base {
             'id' => $section->id,
             'sectionreturn' => $format->get_sectionnum(),
             'insertafter' => false,
-            'summary' => $this->make_course_summary($course,250),
+            'summary' => $this->make_course_summary($course, 250),
             'highlightedlabel' => $format->get_section_highlighted_name(),
             'sitehome' => $course->id == SITEID,
             'editing' => $PAGE->user_is_editing(),
-            'sectionname'=>$format->get_section_name($section),
-            'scgraphic'=> $this->section_completion_graphic(false, $course, false, $output),
-            'coursevideoimage'=> $coursevideoimage,
-            'forumpost' => $this->get_last_forum_post($course) ? $this->get_last_forum_post($course) : false,//no post if false
-            'generatedimageuri'=>$generatedimageuri,
+            'sectionname' => $format->get_section_name($section),
+            'scgraphic' => $this->section_completion_graphic(false, $course, false, $output),
+            'coursevideoimage' => $coursevideoimage,
+            'forumpost' => $this->get_last_forum_post($course) ? $this->get_last_forum_post($course) : false, // no post if false
+            'generatedimageuri' => $generatedimageuri,
             'courserating' => $courserating,
-            'courseid'=> $course->id
+            'courseid' => $course->id,
         ];
 
-        $this->get_course_action_button($data,$course);
+        $this->get_course_action_button($data, $course);
 
         return $data;
     }
@@ -731,26 +751,23 @@ class content extends content_base {
      * @throws \coding_exception
      * @throws \moodle_exception
      */
-    protected function get_last_forum_post($course){
+    protected function get_last_forum_post($course) {
         global $USER;
 
-        if($forums = get_all_instances_in_course("forum", $course)){
+        if ($forums = get_all_instances_in_course("forum", $course)) {
             $vaultfactory = \mod_forum\local\container::get_vault_factory();
             $forumvault = $vaultfactory->get_forum_vault();
 
             foreach ($forums as $forum) {
-
-                if ($forum->section==0) {
-
+                if ($forum->section == 0) {
                     $cm = get_coursemodule_from_instance('forum', $forum->id, $course->id);
                     $context = \context_module::instance($cm->id);
                     if (has_capability('mod/forum:viewdiscussion', $context)) {
-
-                        $forum =  $forumvault->get_from_id($forum->id);
+                        $forum = $forumvault->get_from_id($forum->id);
 
                         $discussionvault = $vaultfactory->get_discussion_vault();
-                        if($discussion = $discussionvault->get_last_discussion_in_forum($forum)){
-                            $posts = forum_get_all_discussion_posts($discussion->get_id(),'p.created DESC');
+                        if ($discussion = $discussionvault->get_last_discussion_in_forum($forum)) {
+                            $posts = forum_get_all_discussion_posts($discussion->get_id(), 'p.created DESC');
                             $post = array_shift($posts);
 
                             $postvault = $vaultfactory->get_post_vault();
@@ -760,7 +777,7 @@ class content extends content_base {
                             $discussionrenderer = $rendererfactory->get_discussion_renderer($forum, $discussion, 3);
 
                             return $discussionrenderer->render($USER, $post, []);
-                        }else{
+                        } else {
                             return false;
                         }
                     }
@@ -769,7 +786,6 @@ class content extends content_base {
         }
 
         return false;
-
     }
 
     /**
@@ -805,7 +821,7 @@ class content extends content_base {
             '#b2bec3',
             '#fdcb6e',
             '#fd79a8',
-            '#6c5ce7'
+            '#6c5ce7',
         ];
         $color = $basecolors[$id % 10];
         return $color;
@@ -819,21 +835,21 @@ class content extends content_base {
      * @return false|string
      * @throws \moodle_exception
      */
-    protected static function get_section_activity_link ($sectionnumber, $course){
+    protected static function get_section_activity_link($sectionnumber, $course) {
 
         // Get a list of all the activities in the course.
         $modules = get_fast_modinfo($course->id)->get_cms();
 
         // Put the modules into an array in order by the position they are shown in the course.
         foreach ($modules as $module) {
-            if($sectionnumber){
-                if($sectionnumber==$module->sectionnum){
+            if ($sectionnumber) {
+                if ($sectionnumber == $module->sectionnum) {
                     if ($module->uservisible && !$module->is_stealth() && !empty($module->url)) {
                         $linkurl = new \moodle_url($module->url);
                         return $linkurl->out(false);
                     }
                 }
-            }else{
+            } else {
                 if ($module->uservisible && !$module->is_stealth() && !empty($module->url)) {
                     $linkurl = new \moodle_url($module->url);
                     return $linkurl->out(false);
@@ -851,7 +867,7 @@ class content extends content_base {
      * @throws \coding_exception
      * @throws \moodle_exception
      */
-    protected static function get_continue_course_activity_link ($course){
+    protected static function get_continue_course_activity_link($course) {
         $completioninfo = new \completion_info($course);
         $cancomplete = isloggedin() && !isguestuser();
 
@@ -865,7 +881,7 @@ class content extends content_base {
         $activitylist = [];
         foreach ($modules as $module) {
             // Only add activities the user can access, aren't in stealth mode and have a url (eg. mod_label does not).
-            if (!$module->uservisible || $module->is_stealth() || empty($module->url) || $module->get_section_info()->section==0) {
+            if (!$module->uservisible || $module->is_stealth() || empty($module->url) || $module->get_section_info()->section == 0) {
                 continue;
             }
 
@@ -873,23 +889,21 @@ class content extends content_base {
                 $completiondata = $completioninfo->get_data($module, true);
 
                 if ($completiondata->completionstate == COMPLETION_COMPLETE || $completiondata->completionstate == COMPLETION_COMPLETE_PASS) {
-
                     $modscompleted[] = $module;
-                }else{
-
+                } else {
                     $modsuncompleted[] = $module;
                 }
             }
         }
 
-        if(count($modscompleted)){
-            if(count($modsuncompleted)){
+        if (count($modscompleted)) {
+            if (count($modsuncompleted)) {
                 $firstuncompleted = $modsuncompleted[array_key_first($modsuncompleted)];
                 if ($firstuncompleted->uservisible && !$firstuncompleted->is_stealth() && !empty($firstuncompleted->url)) {
                     $linkurl = new \moodle_url($firstuncompleted->url);
                     return $linkurl->out(false);
                 }
-            }else{
+            } else {
                 return $modscompleted;
             }
         }
@@ -905,51 +919,49 @@ class content extends content_base {
      * @return void
      * @throws \coding_exception
      */
-    protected function get_course_action_button($data, $course){
+    protected function get_course_action_button($data, $course) {
 
-        if(!$continuecourse =  $this->get_continue_course_activity_link($course)){
-            if($startcourseurl = $this->get_section_activity_link(1,$course)){
-                $startcourse =\html_writer::link(
+        if (!$continuecourse = $this->get_continue_course_activity_link($course)) {
+            if ($startcourseurl = $this->get_section_activity_link(1, $course)) {
+                $startcourse = \html_writer::link(
                     $startcourseurl,
                     get_string('startcourse', 'format_mintcampus'),
                     [
-                        'id'=>'mintcampusstartcourse',
+                        'id' => 'mintcampusstartcourse',
                         'aria-label' => get_string('startcourse', 'format_mintcampus') . ' Button',
                         'tabindex' => '0',
-                        'class' => 'aabtn'
+                        'class' => 'aabtn',
                     ]
                 );
-            }else{
+            } else {
                 $startcourseurl = false;
                 $startcourse = '';
             }
-        }else{
-            if(is_array($continuecourse)){
+        } else {
+            if (is_array($continuecourse)) {
                 $startcourseurl = true;
                 $startcourse = \html_writer::div(
                     get_string('coursecompleted', 'format_mintcampus'),
                     '',
-                    ['id'=>'mintcampusstartcourse']
+                    ['id' => 'mintcampusstartcourse']
                 );
                 $data->coursecompleted = true;
-            }else{
+            } else {
                 $startcourseurl = $continuecourse;
                 $startcourse = \html_writer::link(
                     $startcourseurl,
                     get_string('continuecourse', 'format_mintcampus'),
                     [
-                        'id'=>'mintcampusstartcourse',
+                        'id' => 'mintcampusstartcourse',
                         'aria-label' => get_string('continuecourse', 'format_mintcampus') . ' Button',
                         'tabindex' => '0',
-                        'class' => 'aabtn'
+                        'class' => 'aabtn',
                     ]
                 );
             }
         }
 
         $data->startcourse = $startcourse;
-        $data->startcourseurl= $startcourseurl;
+        $data->startcourseurl = $startcourseurl;
     }
-
-
 }

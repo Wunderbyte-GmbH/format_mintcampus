@@ -22,21 +22,22 @@
  * @param stdClass $section The course_section entry from DB.
  * @param stdClass $course the course record from DB.
  * @return bool/int false if none or the actual progress.
+ * @package format_mintcampus
  */
 function format_mintcampus_section_activity_progress($section, $course) {
     $modinfo = get_fast_modinfo($course);
-    if ($section&&empty($modinfo->sections[$section->section])) {
+    if ($section && empty($modinfo->sections[$section->section])) {
         return false;
     }
 
     // Generate array with count of activities in this section:
-    $sectionmods = array();
+    $sectionmods = [];
     $total = 0;
     $complete = 0;
     $cancomplete = isloggedin() && !isguestuser();
     $completioninfo = new \completion_info($course);
 
-    if($section){
+    if ($section) {
         foreach ($modinfo->sections[$section->section] as $cmid) {
             $thismod = $modinfo->cms[$cmid];
 
@@ -53,15 +54,17 @@ function format_mintcampus_section_activity_progress($section, $course) {
                 if ($cancomplete && $completioninfo->is_enabled($thismod) != COMPLETION_TRACKING_NONE) {
                     $total++;
                     $completiondata = $completioninfo->get_data($thismod, true);
-                    if ($completiondata->completionstate == COMPLETION_COMPLETE ||
-                        $completiondata->completionstate == COMPLETION_COMPLETE_PASS) {
+                    if (
+                        $completiondata->completionstate == COMPLETION_COMPLETE ||
+                        $completiondata->completionstate == COMPLETION_COMPLETE_PASS
+                    ) {
                         $complete++;
                     }
                 }
             }
         }
-    }else{
-        foreach ($modinfo->sections as $ssection){
+    } else {
+        foreach ($modinfo->sections as $ssection) {
             foreach ($ssection as $cmid) {
                 $thismod = $modinfo->cms[$cmid];
 
@@ -78,8 +81,10 @@ function format_mintcampus_section_activity_progress($section, $course) {
                     if ($cancomplete && $completioninfo->is_enabled($thismod) != COMPLETION_TRACKING_NONE) {
                         $total++;
                         $completiondata = $completioninfo->get_data($thismod, true);
-                        if ($completiondata->completionstate == COMPLETION_COMPLETE ||
-                            $completiondata->completionstate == COMPLETION_COMPLETE_PASS) {
+                        if (
+                            $completiondata->completionstate == COMPLETION_COMPLETE ||
+                            $completiondata->completionstate == COMPLETION_COMPLETE_PASS
+                        ) {
                             $complete++;
                         }
                     }
@@ -106,18 +111,19 @@ function format_mintcampus_section_activity_progress($section, $course) {
  * @param stdClass $section The course_section entry from DB.
  * @param stdClass $course the course record from DB.
  * @return string the markup or empty if nothing to show.
+ * @package format_mintcampus
  */
-function format_mintcampus_section_completion_graphic($section, $course, $activitiesstat=false) {
+function format_mintcampus_section_completion_graphic($section, $course, $activitiesstat = false) {
     global $OUTPUT;
     $markup = '';
     if (($course->enablecompletion)) {
-        if(list($complete,$total)= format_mintcampus_section_activity_progress($section, $course)){
+        if ([$complete, $total] = format_mintcampus_section_activity_progress($section, $course)) {
             $percentage = round(($complete / $total) * 100);
-            if($activitiesstat){
-                $progressbar = ['progressbar'=>['percents'=>$percentage,'activities'=>"{$complete}/{$total}",'primarycolor'=>"#8139a3",'secondarycolor'=>'#d0b5dd','fontcolor'=>'#ffffff']];
+            if ($activitiesstat) {
+                $progressbar = ['progressbar' => ['percents' => $percentage, 'activities' => "{$complete}/{$total}", 'primarycolor' => "#8139a3", 'secondarycolor' => '#d0b5dd', 'fontcolor' => '#ffffff']];
                 $markup = $OUTPUT->render_from_template('format_mintcampus/progressbar', $progressbar);
-            }else{
-                $progressbar = ['progressbar'=>['percents'=>$percentage,'activities'=>null,'primarycolor'=>"#8139a3",'secondarycolor'=>'#d0b5dd','fontcolor'=>'#ffffff']];
+            } else {
+                $progressbar = ['progressbar' => ['percents' => $percentage, 'activities' => null, 'primarycolor' => "#8139a3", 'secondarycolor' => '#d0b5dd', 'fontcolor' => '#ffffff']];
                 $markup = $OUTPUT->render_from_template('format_mintcampus/progressbar', $progressbar);
             }
         }
@@ -131,10 +137,11 @@ function format_mintcampus_section_completion_graphic($section, $course, $activi
  * @param stdClass $section The course_section entry from DB.
  * @param stdClass $course the course record from DB.
  * @return bool true if completion percentage is greater than 50%, otherwise false.
+ * @package format_mintcampus
  */
 function format_mintcampus_section_completion_check_50($section, $course) {
     if ($course->enablecompletion) {
-        if (list($complete, $total) = format_mintcampus_section_activity_progress($section, $course)) {
+        if ([$complete, $total] = format_mintcampus_section_activity_progress($section, $course)) {
             $percentage = round(($complete / $total) * 100);
             return $percentage > 50;
         }
@@ -147,6 +154,7 @@ function format_mintcampus_section_completion_check_50($section, $course) {
  *
  * @param int $courseid the course record from DB.
  * @return array true if completion percentage is greater than 50%, otherwise false.
+ * @package format_mintcampus
  */
 function get_course_ratings_with_comments($courseid = null) {
     global $DB;

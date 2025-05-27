@@ -16,7 +16,7 @@
 
 /**
  * Contains the default activity item from a section.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
@@ -36,14 +36,13 @@ use stdClass;
 
 /**
  * Base class to render a section activity in the activities list.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class cmitem extends \core_courseformat\output\local\content\section\cmitem {
-
     /**
      * Constructor.
      *
@@ -53,7 +52,7 @@ class cmitem extends \core_courseformat\output\local\content\section\cmitem {
      * @param array $displayoptions optional extra display options
      */
     public function __construct(course_format $format, section_info $section, cm_info $mod, array $displayoptions = []) {
-        parent::__construct($format,  $section,$mod,  $displayoptions);
+        parent::__construct($format, $section, $mod, $displayoptions);
     }
 
     /**
@@ -71,9 +70,9 @@ class cmitem extends \core_courseformat\output\local\content\section\cmitem {
         $data = new stdClass();
         $data->cms = [];
         $accordiontype = '';
-        $accordionheading='';
-        if($mod->modname=='accordion'){
-            $accordion = $DB->get_record('accordion', array('id' => $mod->instance));
+        $accordionheading = '';
+        if ($mod->modname == 'accordion') {
+            $accordion = $DB->get_record('accordion', ['id' => $mod->instance]);
             $accordiontype = $accordion->type;
             $accordionheading = $accordion->name;
         }
@@ -93,8 +92,8 @@ class cmitem extends \core_courseformat\output\local\content\section\cmitem {
             'extraclasses' => $mod->extraclasses,
             'cmformat' => $item->export_for_template($output),
             'hasinfo' => $hasinfo,
-            'accordiontype'=> $accordiontype,
-            'accordionheading'=> $accordionheading,
+            'accordiontype' => $accordiontype,
+            'accordionheading' => $accordionheading,
         ];
     }
 }

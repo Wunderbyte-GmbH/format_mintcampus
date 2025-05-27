@@ -26,16 +26,15 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot."/lib/form/filemanager.php");
+require_once($CFG->dirroot . "/lib/form/filemanager.php");
 
 class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager implements templatable {
-
-    private static $options = array(
+    private static $options = [
         'maxfiles' => 1,
         'subdirs' => 0,
-        'accepted_types' => array('gif', 'jpe', 'jpeg', 'jpg', 'png', 'webp'),
-        'return_types' => FILE_INTERNAL
-    );
+        'accepted_types' => ['gif', 'jpe', 'jpeg', 'jpg', 'png', 'webp'],
+        'return_types' => FILE_INTERNAL,
+    ];
 
     /**
      * Constructor
@@ -45,8 +44,8 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
      * @param array $attributes (optional) Either a typical HTML attribute string
      *              or an associative array
      */
-    public function __construct($elementName=null, $elementLabel=null, $attributes=null) {
-        parent::__construct($elementName, $elementLabel, $attributes, self::$options);
+    public function __construct($elementname = null, $elementlabel = null, $attributes = null) {
+        parent::__construct($elementname, $elementlabel, $attributes, self::$options);
     }
 
     /**
@@ -55,7 +54,7 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
      * @param int $value Draft item id with the uploaded files.
      * @return string|null Validation error message or null.
      */
-    public function validateSubmitValue($value) {
+    public function validatesubmitvalue($value) {
         $failure = parent::validateSubmitValue($value);
         if (!$failure) {
             $course = $this->getAttribute('course');
@@ -66,7 +65,7 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
             $lock = true;
             if (!defined('BEHAT_SITE_RUNNING')) {
                 $lockfactory = \core\lock\lock_config::get_lock_factory('format_mintcampus');
-                $lock = $lockfactory->get_lock('sectionid'.$sectionid, 5);
+                $lock = $lockfactory->get_lock('sectionid' . $sectionid, 5);
             }
             if ($lock) {
                 $fs = get_file_storage();
@@ -74,8 +73,14 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
                 $indata->sectionimage_filemanager = $value;
                 // The file manager deals with the files table when the image is deleted.
                 $outdata = file_postupdate_standard_filemanager(
-                    $indata, 'sectionimage', self::$options, $coursecontext,
-                    'format_mintcampus', 'sectionimage', $sectionid);
+                    $indata,
+                    'sectionimage',
+                    self::$options,
+                    $coursecontext,
+                    'format_mintcampus',
+                    'sectionimage',
+                    $sectionid
+                );
                 global $DB;
                 if ($outdata->sectionimage == '1') {
                     // We have draft file(s), however they could also be left over ones!
@@ -84,7 +89,7 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
                     $sectionimage = $DB->get_record_select(
                         'format_mintcampus_image',
                         'courseid = ? AND sectionid = ?',
-                        array($course->id, $sectionid)
+                        [$course->id, $sectionid]
                     );
                     $havefiles = false;
                     $havechangedfiles = false;
@@ -145,7 +150,10 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
                     $lock->release();
                 }
             } else {
-                throw new \moodle_exception('cannotgetimagelock', 'format_mintcampus', '',
+                throw new \moodle_exception(
+                    'cannotgetimagelock',
+                    'format_mintcampus',
+                    '',
                     get_string('cannotgetmanagesectionimagelock', 'format_mintcampus')
                 );
             }
@@ -168,7 +176,7 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
         global $DB;
 
         try {
-            $DB->delete_records('format_mintcampus_image', array('courseid' => $courseid, 'sectionid' => $sectionid));
+            $DB->delete_records('format_mintcampus_image', ['courseid' => $courseid, 'sectionid' => $sectionid]);
         } catch (\Exception $e) {
             if (!defined('BEHAT_SITE_RUNNING')) {
                 $lock->release();
@@ -189,7 +197,7 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
      *
      * @return string
      */
-    public function toHtml() {
+    public function tohtml() {
         $this->init();
         return parent::toHtml();
     }
@@ -203,7 +211,14 @@ class MoodleQuickForm_sectionfilemanager extends MoodleQuickForm_filemanager imp
 
         $coursecontext = context_course::instance($course->id);
         $fmd = file_prepare_standard_filemanager(
-            $course, 'sectionimage', self::$options, $coursecontext, 'format_mintcampus', 'sectionimage', $sectionid);
+            $course,
+            'sectionimage',
+            self::$options,
+            $coursecontext,
+            'format_mintcampus',
+            'sectionimage',
+            $sectionid
+        );
         $this->setValue($fmd->sectionimage_filemanager);
     }
 }

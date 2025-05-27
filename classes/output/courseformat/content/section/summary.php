@@ -41,7 +41,6 @@ use stdClass;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class summary extends summary_base {
-
     /** @var section_info the course section class - core is 'private' */
     private $thesection;
 

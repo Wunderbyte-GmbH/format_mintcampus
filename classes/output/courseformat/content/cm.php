@@ -16,7 +16,7 @@
 
 /**
  * Contains the default activity list from a section.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
 
@@ -41,15 +41,14 @@ use stdClass;
 
 /**
  * Base class to render a course module inside a course format.
-  *
+ *
  * @package    format_mintcampus
  * @version    See the value of '$plugin->version' in the version.php file.
  * @author     Based on code originally written 2020 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class cm extends \core_courseformat\output\local\content\cm {
-
-    private $section;
+    protected $section;
     /**
      * @param course_format $format
      * @param \section_info $section
@@ -58,7 +57,7 @@ class cm extends \core_courseformat\output\local\content\cm {
      */
     public function __construct(course_format $format, \section_info $section, \cm_info $mod, array $displayoptions = []) {
         parent::__construct($format, $section, $mod, $displayoptions);
-        $this->section =$section;
+        $this->section = $section;
     }
 
     /**
@@ -84,10 +83,13 @@ class cm extends \core_courseformat\output\local\content\cm {
         $haspartials = [];
         $haspartials['cmname'] = $this->add_cm_name_data($data, $output);
         $haspartials['availability'] = $this->add_availability_data($data, $output);
-        $haspartials['duration'] = $this->add_duration_content_data($data, $output);//additional
+        $haspartials['duration'] = $this->add_duration_content_data($data, $output);// additional
         $haspartials['alternative'] = $this->add_alternative_content_data($data, $output);
         $haspartials['completion'] = $this->add_completion_data($data, $output);
         $haspartials['editor'] = $this->add_editor_data($data, $output);
+        $haspartials['dates'] = $this->add_dates_data($data, $output);
+        $haspartials['groupmode'] = $this->add_groupmode_data($data, $output);
+
         $this->add_format_data($data, $haspartials, $output);
 
         // Calculated fields.
@@ -106,13 +108,13 @@ class cm extends \core_courseformat\output\local\content\cm {
      */
     protected function add_alternative_content_data(stdClass &$data, renderer_base $output): bool {
         $altcontent = $this->mod->get_formatted_content(
-                ['overflowdiv' => true, 'noclean' => true]
+            ['overflowdiv' => true, 'noclean' => true]
         );
 
-        if(!empty($altcontent)){
+        if (!empty($altcontent)) {
             $altcontent = preg_replace('~<duration(.*?)</duration>~Usi', "", $altcontent);
         }
-           $data->notlabel = $data->modname!='Label';
+           $data->notlabel = $data->modname != 'Label';
            $data->altcontent = (empty($altcontent)) ? false : $altcontent;
            $data->afterlink = $this->mod->afterlink;
 
@@ -126,19 +128,18 @@ class cm extends \core_courseformat\output\local\content\cm {
      * @param renderer_base $output typically, the renderer that's calling this function
      * @return bool if the cm has alternative content
      */
-    protected function add_duration_content_data(stdClass &$data,  $output): bool {
+    protected function add_duration_content_data(stdClass &$data, $output): bool {
         global $DB;
-        $moduleinstance = $DB->get_record($this->mod->modname, array('id' => $this->mod->instance), '*', MUST_EXIST);
-        $data->durationtext=false;
-       if($moduleinstance->intro){
-           preg_match('/<duration>(.*?)<\/duration>/s', $moduleinstance->intro, $match);
+        $moduleinstance = $DB->get_record($this->mod->modname, ['id' => $this->mod->instance], '*', MUST_EXIST);
+        $data->durationtext = false;
+        if ($moduleinstance->intro) {
+            preg_match('/<duration>(.*?)<\/duration>/s', $moduleinstance->intro, $match);
 
-           $data->notlabel = $data->modname!='Label';
-           if(!empty($match)){
-               $data->durationtext= format_string($match[1]);
-           }
-
-       }
+            $data->notlabel = $data->modname != 'Label';
+            if (!empty($match)) {
+                $data->durationtext = format_string($match[1]);
+            }
+        }
         return !empty($data->durationtext);
     }
 
@@ -171,8 +172,10 @@ class cm extends \core_courseformat\output\local\content\cm {
      * @return bool the module has completion information
      */
     protected function add_completion_data(stdClass &$data, renderer_base $output): bool {
-        global $USER;
+        global $USER, $PAGE;
         $course = $this->mod->get_course();
+
+
         // Fetch completion details.
         $showcompletionconditions = $course->showcompletionconditions == COMPLETION_SHOW_CONDITIONS;
         $completiondetails = cm_completion_details::get_instance($this->mod, $USER->id, $showcompletionconditions);
@@ -192,12 +195,16 @@ class cm extends \core_courseformat\output\local\content\cm {
         $showcompletioninfo = $completiondetails->has_completion() && ($showcompletionconditions ||
                 (!$completiondetails->is_automatic() && $completiondetails->show_manual_completion()));
         if ($showcompletioninfo || !empty($activitydates)) {
-            $activityinfo = new activity_information($this->mod, $completiondetails, $activitydates);
+            $activityinfo = activity_dates::get_dates_for_module($this->mod, $USER->id);
+
             $activityinfodata = $activityinfo->export_for_template($output);
         }
-
+        $activityinfodata = new stdClass();
+        $activityinfodata->cmid = $this->mod->id;
+        $activityinfodata->acitivityname = $this->mod->name;
+        $activityinfodata->hascompletion = true;
         $data->activityinfo = $activityinfodata;
-        $data->cmid = isset($activityinfodata->cmid) ?:false;
+        $data->cmid = isset($this->mod->id) ?: false;
         return $activityinfodata->hascompletion;
     }
 }
