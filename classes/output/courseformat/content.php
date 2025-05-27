@@ -656,7 +656,7 @@ class content extends content_base {
             "SELECT
                 courseid,
                 COUNT(courseid) AS reviewsnum,
-                AVG(rating::NUMERIC) AS score
+                AVG(CAST(rating AS DECIMAL)) AS score
             FROM {format_mintcampus_ratings}
             WHERE courseid = $1
             GROUP BY courseid",
