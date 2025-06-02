@@ -49,8 +49,8 @@ define(['jquery','core/ajax',
                        $("#courseindex-content").find("li[data-id='"+activitydata['previouscm']+"']").addClass("pageitem");
                    }
 
-                   $("div.float-right a").removeClass("btn-link").addClass("btn-primary").html(await Str.get_string('captionnext', 'format_mintcampus'));
-                   $("div.float-left a").removeClass("btn-link").addClass("btn-primary").html(await Str.get_string('captionback', 'format_mintcampus'));
+                   $("div.float-start a").removeClass("btn-link").addClass("btn-primary").html(await Str.get_string('captionnext', 'format_mintcampus'));
+                   $("div.float-end a").removeClass("btn-link").addClass("btn-primary").html(await Str.get_string('captionback', 'format_mintcampus'));
 
                    const courseid = $('#mintcampuscourserating').attr("data-id");
 
