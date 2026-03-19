@@ -45,8 +45,6 @@ class format_mintcampus extends core_courseformat\base {
      * @return format_mintcampus
      */
     protected function __construct($format, $courseid) {
-        global $PAGE;
-        parent::__construct($format, $courseid);
         if ($courseid === 0) {
             global $COURSE;
             $courseid = $COURSE->id;  // Save lots of global $COURSE as we will never be the site course.
@@ -797,7 +795,7 @@ class format_mintcampus extends core_courseformat\base {
         $renderer = $PAGE->get_renderer('format_mintcampus');
 
         if (!($section instanceof section_info)) {
-            $modinfo = course_modinfo::instance($this->courseid);
+            $modinfo = get_fast_modinfo($this->courseid);
             $section = $modinfo->get_section_info($section->section);
         }
         $elementclass = $this->get_output_classname('content\\section\\availability');

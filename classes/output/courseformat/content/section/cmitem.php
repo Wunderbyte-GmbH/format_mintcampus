@@ -92,6 +92,8 @@ class cmitem extends \core_courseformat\output\local\content\section\cmitem {
             'extraclasses' => $mod->extraclasses,
             'cmformat' => $item->export_for_template($output),
             'hasinfo' => $hasinfo,
+            'indent' => ($format->uses_indentation()) ? $mod->indent : 0,
+            'groupmode' => $mod->groupmode ?? null,
             'accordiontype' => $accordiontype,
             'accordionheading' => $accordionheading,
         ];

@@ -76,6 +76,9 @@ class section extends \core_courseformat\output\local\state\section {
             'bulkeditable' => $this->is_bulk_editable(),
             'component' => $section->component,
             'itemid' => $section->itemid,
+            'parentsectionid' => method_exists($section, 'get_component_instance')
+                ? $section->get_component_instance()?->get_parent_section()?->id
+                : null,
         ];
 
         $data = (object) $data;
