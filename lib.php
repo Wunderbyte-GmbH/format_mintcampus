@@ -846,7 +846,12 @@ class format_mintcampus extends core_courseformat\base {
             'name' => 'mintcampuscoursevideo_filemanager',
         ]);
         if (!$itemid) {
-            $itemid = file_get_unused_draft_itemid();
+            // Only generate draft item ID when a real user is logged in (not CLI/guest).
+            if (isloggedin() && !isguestuser()) {
+                $itemid = file_get_unused_draft_itemid();
+            } else {
+                $itemid = 0;
+            }
         }
         return $itemid;
     }
@@ -890,7 +895,12 @@ class format_mintcampus extends core_courseformat\base {
             'name' => 'mintcampuscourseimage_filemanager',
         ]);
         if (!$itemid) {
-            $itemid = file_get_unused_draft_itemid();
+            // Only generate draft item ID when a real user is logged in (not CLI/guest).
+            if (isloggedin() && !isguestuser()) {
+                $itemid = file_get_unused_draft_itemid();
+            } else {
+                $itemid = 0;
+            }
         }
         return $itemid;
     }
@@ -1091,7 +1101,11 @@ function format_mintcampus_coursevideo_filemanager($courseid) {
         'name' => 'mintcampuscoursevideo_filemanager',
     ]);
     if (!$itemid) {
-        $itemid = file_get_unused_draft_itemid();
+        if (isloggedin() && !isguestuser()) {
+            $itemid = file_get_unused_draft_itemid();
+        } else {
+            $itemid = 0;
+        }
     }
     return $itemid;
 }
@@ -1140,7 +1154,11 @@ function format_mintcampus_courseimage_filemanager($courseid) {
         'name' => 'mintcampuscourseimage_filemanager',
     ]);
     if (!$itemid) {
-        $itemid = file_get_unused_draft_itemid();
+        if (isloggedin() && !isguestuser()) {
+            $itemid = file_get_unused_draft_itemid();
+        } else {
+            $itemid = 0;
+        }
     }
     return $itemid;
 }

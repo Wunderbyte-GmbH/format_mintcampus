@@ -172,33 +172,6 @@ class cm extends \core_courseformat\output\local\content\cm {
      * @return bool the module has completion information
      */
     protected function add_completion_data(stdClass &$data, renderer_base $output): bool {
-        global $USER, $PAGE;
-        $course = $this->mod->get_course();
-
-
-        // Fetch completion details.
-        $showcompletionconditions = $course->showcompletionconditions == COMPLETION_SHOW_CONDITIONS;
-        $completiondetails = cm_completion_details::get_instance($this->mod, $USER->id, $showcompletionconditions);
-
-        // Fetch activity dates.
-        $activitydates = [];
-        if ($course->showactivitydates) {
-            $activitydates = activity_dates::get_dates_for_module($this->mod, $USER->id);
-        }
-
-        $activityinfodata = (object) ['hasdates' => false, 'hascompletion' => false];
-        // There are activity dates to be shown; or
-        // Completion info needs to be displayed
-        // * The activity tracks completion; AND
-        // * The showcompletionconditions setting is enabled OR an activity that tracks manual
-        // completion needs the manual completion button to be displayed on the course homepage.
-        $showcompletioninfo = $completiondetails->has_completion() && ($showcompletionconditions ||
-                (!$completiondetails->is_automatic() && $completiondetails->show_manual_completion()));
-        if ($showcompletioninfo || !empty($activitydates)) {
-            $activityinfo = activity_dates::get_dates_for_module($this->mod, $USER->id);
-
-            $activityinfodata = $activityinfo->export_for_template($output);
-        }
         $activityinfodata = new stdClass();
         $activityinfodata->cmid = $this->mod->id;
         $activityinfodata->acitivityname = $this->mod->name;
