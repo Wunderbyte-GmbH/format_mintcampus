@@ -25,8 +25,6 @@
 
 namespace format_mintcampus\output\courseformat\content\section;
 
-use core\navigation\views\primary_test;
-use core\output\named_templatable;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
 use moodle_url;
@@ -119,7 +117,10 @@ class cmlist extends \core_courseformat\output\local\content\section\cmlist {
             if ($showmovehere && $USER->activitycopy == $mod->id) {
                 continue;
             }
-            if ($mod->is_visible_on_course_page()) {
+            // Check visibility and display type (is_of_type_that_can_display added in Moodle 5.1).
+            $candisplay = $mod->is_visible_on_course_page()
+                && (!method_exists($mod, 'is_of_type_that_can_display') || $mod->is_of_type_that_can_display());
+            if ($candisplay) {
                 $item = new $this->itemclass($format, $section, $mod, $this->displayoptions);
                 $itemoutput = $item->export_for_template($output);// activity
 

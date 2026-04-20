@@ -26,12 +26,10 @@
 namespace format_mintcampus\output\courseformat\content\section;
 
 use context_course;
-use core\output\named_templatable;
 use core_availability\info;
 use core_availability\info_section;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
 use section_info;
 use stdClass;
 
@@ -46,8 +44,6 @@ use stdClass;
 class availability extends \core_courseformat\output\local\content\section\availability {
     use courseformat_named_templatable;
 
-    protected $section;
-    
     /**
      * Constructor.
      *
@@ -56,17 +52,15 @@ class availability extends \core_courseformat\output\local\content\section\avail
      */
     public function __construct(course_format $format, section_info $section) {
         parent::__construct($format, $section);
-        $this->format = $format;
-        $this->section = $section;
     }
 
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
      * @param \renderer_base $output typically, the renderer that's calling this function
-     * @return stdClass data context for a mustache template
+     * @return stdClass|null data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(\renderer_base $output): ?stdClass {
         $this->build_export_data($output);
         return $this->data;
     }
@@ -81,116 +75,5 @@ class availability extends \core_courseformat\output\local\content\section\avail
         $this->build_export_data($output);
         $attributename = $this->hasavailabilityname;
         return $this->data->$attributename;
-    }
-
-    /**
-     * Protected method to build the export data.
-     *
-     * @param \renderer_base $output typically, the renderer that's calling this function
-     */
-    protected function build_export_data(\renderer_base $output) {
-        if (!empty($this->data)) {
-            return;
-        }
-
-        $data = (object)[
-            'info' => $this->get_info($output),
-        ];
-
-        $attributename = $this->hasavailabilityname;
-        $data->$attributename = !empty($data->info);
-
-        $this->data = $data;
-    }
-
-    /**
-     * Export this data so it can be used as the context for a mustache template.
-     *
-     * If section is not visible, display the message about that ('Not available
-     * until...', that sort of thing). Otherwise, returns blank.
-     *
-     * For users with the ability to view hidden sections, it shows the
-     * information even though you can view the section and also may include
-     * slightly fuller information (so that teachers can tell when sections
-     * are going to be unavailable etc). This logic is the same as for
-     * activities.
-     *
-     * @param renderer_base $output typically, the renderer that's calling this function
-     * @return stdclass data context for a mustache template
-     */
-    protected function get_info(\renderer_base $output): array {
-        global $CFG, $USER;
-
-        $section = $this->section;
-        $context = context_course::instance($section->course);
-
-        $canviewhidden = has_capability('moodle/course:viewhiddensections', $context, $USER);
-
-        $info = [];
-        if (!$section->visible) {
-            $info = [];
-        } else if (!$section->uservisible) {
-            if ($section->availableinfo) {
-                // Note: We only get to this function if availableinfo is non-empty,
-                // so there is definitely something to print.
-                $formattedinfo = info::format_info($section->availableinfo, $section->course);
-                $info[] = $this->availability_info($formattedinfo, 'isrestricted');
-            }
-        } else if ($canviewhidden && !empty($CFG->enableavailability)) {
-            // Check if there is an availability restriction.
-            $ci = new info_section($section);
-            $fullinfo = $ci->get_full_information();
-            if ($fullinfo) {
-                $formattedinfo = info::format_info($fullinfo, $section->course);
-                $info[] = $this->availability_info($formattedinfo, 'isrestricted isfullinfo');
-            }
-        }
-
-        return $info;
-    }
-
-    /**
-     * Generate the basic availability information data.
-     *
-     * @param string $text the formatted avalability text
-     * @param string $additionalclasses additional css classes
-     * @return stdClass the availability information data
-     */
-    protected function availability_info($text, $additionalclasses = ''): stdClass {
-
-        $data = (object)[
-            'text' => $text,
-            'classes' => $additionalclasses,
-        ];
-        $additionalclasses = array_filter(explode(' ', $additionalclasses));
-
-        if (in_array('ishidden', $additionalclasses)) {
-            $data->ishidden = 1;
-        } else if (in_array('isstealth', $additionalclasses)) {
-            $data->isstealth = 1;
-        } else if (in_array('isrestricted', $additionalclasses)) {
-            $data->isrestricted = 1;
-
-            if (in_array('isfullinfo', $additionalclasses)) {
-                $data->isfullinfo = 1;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Add the section availability to the data structure.
-     *
-     * @param stdClass $data the current cm data reference
-     * @param renderer_base $output typically, the renderer that's calling this function
-     * @return bool if the cm has name data
-     */
-    protected function add_availability_data(stdClass &$data, renderer_base $output): bool {
-        $availability = new $this->availabilityclass($this->format, $this->section);
-        $data->availability = $availability->export_for_template($output);
-        $data->restrictionlock = !empty($this->section->availableinfo);
-        $data->hasavailability = $availability->has_availability($output);
-        return true;
     }
 }
