@@ -69,18 +69,19 @@
         aria-labelledby="flexaccordsectionname-{{number}}"
         aria-describedby="flexaccordsectionsummary-{{number}}"
     >
-        <a class="flexaccordsectionwrapper flexaccordicon_link"
+        <a class="flexaccordsectionwrapper flexaccordicon_link p-0"
            role="link"
            href="{{#sectionurl}}{{sectionurl}}{{/sectionurl}}{{^sectionurl}}#{{/sectionurl}}"
-        >
-            <div class="sctilegraphic">
+        >   {{#lp}}{{{lp}}}{{/lp}}
+            <div class="flexaccordsectionwrapperwrapper"><div class="sctilegraphic">
                 {{{scgraphic}}}
             </div>
             <div id="flexaccordsection-{{number}}"
                  class="flexaccordicon_title"
             >
                 <div id="flexaccordsectionname-{{number}}" class="icon_content">
-                    <div class="title-part">{{#str}}module, format_mintcampus{{/str}} {{number}}</div>
+		    {{#lp}}<div class="title-part">{{lpmodule}}</div>{{/lp}}
+                    {{^lp}}<div class="title-part">{{#str}}module, format_mintcampus{{/str}} {{number}}</div>{{/lp}}
                     <div class="title-part title-part-main">{{{sectionname}}}</div>
                 </div>
             </div>
@@ -92,6 +93,20 @@
             {{^sectionurl}}
                 <p class="alert alert-info noforumpost">{{#str}}nosectionactivity,format_mintcampus{{/str}}</p>
             {{/sectionurl}}
+	    </div>
         </a>
     </li>
 {{/mintcampussections}}
+
+<style>
+.flexaccordsectionwrapperwrapper {
+  padding:30px;
+}
+
+.flexaccordsectionwrapper img {
+   border-radius: 7px;
+   border-bottom-left-radius: 0px;
+   border-bottom-right-radius: 0px;
+
+}
+</style>

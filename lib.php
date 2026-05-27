@@ -560,9 +560,8 @@ class format_mintcampus extends core_courseformat\base {
                     'mintcampuscoursevideo_filearea',
                     $data->mintcampuscoursevideo_filemanager
                 );
+                $this->set_mintcampuscoursevideo_filemanager($data->mintcampuscoursevideo_filemanager);
             }
-
-            $this->set_mintcampuscoursevideo_filemanager($data->mintcampuscoursevideo_filemanager);
 
             // course image
             if (!empty($data->mintcampuscourseimage_filemanager)) {
@@ -575,9 +574,8 @@ class format_mintcampus extends core_courseformat\base {
                     'mintcampuscourseimage_filearea',
                     $data->mintcampuscourseimage_filemanager
                 );
+                $this->set_mintcampuscourseimage_filemanager($data->mintcampuscourseimage_filemanager);
             }
-
-            $this->set_mintcampuscourseimage_filemanager($data->mintcampuscourseimage_filemanager);
         }
         $data = (array) $data;
 

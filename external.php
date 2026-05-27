@@ -154,6 +154,7 @@ class format_mintcampus_external extends external_api {
         $sections = $modinfo->get_section_info_all();
 
         $coursecompletion = format_mintcampus_section_completion_graphic(false, $course);
+        $sections[$sectionnum]->number = $sectionnum;
         $sectioncompletion = format_mintcampus_section_completion_graphic($sections[$sectionnum], $course);
 
 // $courserating = \html_writer::tag('i','',['id'=>'mintcampusrating','class'=>'fa fa-star-half-o fa-3','aria-hidden'=>'true']);

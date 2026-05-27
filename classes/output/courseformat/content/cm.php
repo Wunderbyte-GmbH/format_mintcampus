@@ -195,9 +195,9 @@ class cm extends \core_courseformat\output\local\content\cm {
         $showcompletioninfo = $completiondetails->has_completion() && ($showcompletionconditions ||
                 (!$completiondetails->is_automatic() && $completiondetails->show_manual_completion()));
         if ($showcompletioninfo || !empty($activitydates)) {
-            $activityinfo = activity_dates::get_dates_for_module($this->mod, $USER->id);
+            // $activityinfo = activity_dates::get_dates_for_module($this->mod, $USER->id);
 
-            $activityinfodata = $activityinfo->export_for_template($output);
+            // $activityinfodata = $activityinfo->export_for_template($output);
         }
         $activityinfodata = new stdClass();
         $activityinfodata->cmid = $this->mod->id;

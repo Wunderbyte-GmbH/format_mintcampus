@@ -119,6 +119,18 @@ function format_mintcampus_section_completion_graphic($section, $course, $activi
     if (($course->enablecompletion)) {
         if ([$complete, $total] = format_mintcampus_section_activity_progress($section, $course)) {
             $percentage = round(($complete / $total) * 100);
+            if ($course->category == 5) {
+                global $USER;
+                $percentages = local_course_explorer_service\external\course_progress_handler::execute($course->id, $USER->mail);
+                if ($section) {
+                    $percentage = get_section_progress_by_num($percentages, $section->number);
+                } else {
+                    $percentage = $percentages['progress'];
+                }
+                $progressbar = ['progressbar' => ['percents' => round($percentage), 'activities' => '', 'primarycolor' => "#8139a3", 'secondarycolor' => '#d0b5dd', 'fontcolor' => '#ffffff']];
+                $markup = $OUTPUT->render_from_template('format_mintcampus/progressbar', $progressbar);
+                return $markup;
+            }
             if ($activitiesstat) {
                 $progressbar = ['progressbar' => ['percents' => $percentage, 'activities' => "{$complete}/{$total}", 'primarycolor' => "#8139a3", 'secondarycolor' => '#d0b5dd', 'fontcolor' => '#ffffff']];
                 $markup = $OUTPUT->render_from_template('format_mintcampus/progressbar', $progressbar);
@@ -129,6 +141,18 @@ function format_mintcampus_section_completion_graphic($section, $course, $activi
         }
     }
     return $markup;
+}
+
+/**
+ * For learningpaths
+ */
+function get_section_progress_by_num($coursedata, $sectionnum) {
+    foreach ($coursedata['sections'] as $section) {
+        if ($section['sectionnum'] == $sectionnum) {
+            return isset($section['progress']) ? $section['progress'] : null;
+        }
+    }
+    return null;
 }
 
 /**

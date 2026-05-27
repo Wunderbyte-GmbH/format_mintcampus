@@ -28,10 +28,15 @@ namespace format_mintcampus\output\courseformat;
 
 use core_courseformat\output\local\content as content_base;
 use core_courseformat\output\local\content\section\summary;
+use local_course_explorer_service\service\learningpath_service;
+use local_course_explorer_service\task\category_learningpath_sync;
 use mod_forum\local\vaults\forum;
 use stdClass;
 
 require_once($CFG->dirroot . '/course/format/mintcampus/locallib.php');
+require_once($CFG->dirroot . '/local/course_explorer_service//learningpath_exporter.php');
+require_once($CFG->dirroot . '/local/course_explorer_service/classes/course_repository.php');
+
 
 /**
  * Base class to render a course content.
@@ -83,6 +88,27 @@ class content extends content_base {
         $course = $format->get_course();
         $this->courseformat = course_get_format($course);
         $currentsectionid = 0;
+        $courserepository = new \course_repository();
+        $metadata = $courserepository->get_course_metadata($course->id);
+        // Image section
+        $category = \core_course_category::get($course->category, IGNORE_MISSING, true);
+        $islp = isset($metadata['islearningpath']) && $metadata['islearningpath'];
+        // $courserepository = new course_repository();
+        if ($islp) {
+            $service = new learningpath_service();
+            $configname = $service->build_configname((int)$course->id, 'learningpath');
+            $existing = get_config('local_course_explorer_service', $configname);
+            $existing = false;
+            if ($existing === false || $existing === null) {
+                $islp = true;
+                    $datalp = \learningpath_exporter::get_lernpfad_data((int)$course->id);
+                    if (is_array($datalp) && !empty($datalp['entries'])) {
+                        $existing = $service->save_course_preference((int)$course->id, 'learningpath', $datalp);
+                    }
+            }
+            $decoded = json_decode((string)$existing, true);
+        }
+        
 
         if ($editing) {
             $data->coursesettings = new \moodle_url('/course/edit.php', ['id' => $course->id]);
@@ -200,7 +226,8 @@ class content extends content_base {
                 // Number.
                 $sectionimages[$section->id]->number = $section->num;
                 $sectionimages[$section->id]->scgraphic = $section->scgraphic;
-// $sectionimages[$section->id]->summary = $section->summary;
+                // $sectionimages[$section->id]->summary = $section->summary;
+                $index = $section->num - 1;
 
                 // Alt text.
                 $sectionformatoptions = $format->get_format_options($section);
@@ -230,7 +257,16 @@ class content extends content_base {
 
                     // Section name.
                     $sectionimages[$section->id]->sectionname = $section->name;
-
+                    if ($islp && $decoded) {   
+                        $bestkey = $this->find_closest_title_key($section->name, $decoded);
+                        $imageurl = $bestkey !== null ? ($decoded[$bestkey]['image'] ?? null) : null;
+                        $modul    = $bestkey !== null ? ($decoded[$bestkey]['modul'] ?? null) : null;
+                        if ($modul == 'no sync') {
+                            $modul = '';
+                        }
+                        $sectionimages[$section->id]->lp = "<img src=" . $imageurl . ">";
+                        $sectionimages[$section->id]->lpmodule = $modul;
+                    }
                     // Section break.
                     if ($sectionformatoptions['sectionbreak'] == 2) { // Yes.
                         $sectionimages[$section->id]->sectionbreak = true;
@@ -276,6 +312,35 @@ class content extends content_base {
             $data->insertafter = true;
         }
         return $data;
+    }
+
+    private function find_closest_title_key(string $rawtitle, array $decoded): ?string {
+        $needle = $this->normalize_title($rawtitle);
+
+        $bestKey = null;
+        $bestScore = -1;
+
+        foreach ($decoded as $key => $url) { // <– $key ist der Titel!
+            $candidate = $this->normalize_title($key);
+
+            // Exakter Match nach Normalisierung (hier greift dein "🧭 Einführung und Orientierung")
+            if ($needle === $candidate) {
+                return $key;
+            }
+
+            similar_text($needle, $candidate, $percent);
+            if ($percent > $bestScore) {
+                $bestScore = $percent;
+                $bestKey = $key;
+            }
+        }
+
+        // Falls du wirklich Fuzzy-Match willst:
+        if ($bestScore >= 70) {
+            return $bestKey;
+        }
+
+        return null;
     }
 
     /**
@@ -451,6 +516,15 @@ class content extends content_base {
         }
 
         return null;
+    }
+
+    private function normalize_title(string $title): string {
+        $title = trim($title);
+        $title = preg_replace('/^\p{So}\s*/u', '', $title);
+        $title = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $title);
+        $title = mb_strtolower($title, 'UTF-8');
+        $title = preg_replace('/\s+/', ' ', $title);
+        return $title;
     }
 
     private function make_list_of_module_contents($sectionformatoptions): string {
@@ -730,7 +804,7 @@ class content extends content_base {
             'sitehome' => $course->id == SITEID,
             'editing' => $PAGE->user_is_editing(),
             'sectionname' => $format->get_section_name($section),
-            'scgraphic' => $this->section_completion_graphic(false, $course, false, $output),
+            //'scgraphic' => $this->section_completion_graphic(false, $course, false, $output),
             'coursevideoimage' => $coursevideoimage,
             'forumpost' => $this->get_last_forum_post($course) ? $this->get_last_forum_post($course) : false, // no post if false
             'generatedimageuri' => $generatedimageuri,
